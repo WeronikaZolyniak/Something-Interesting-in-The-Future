@@ -1,20 +1,38 @@
-﻿// MostOriginalCodeEver.cpp : Ten plik zawiera funkcję „main”. W nim rozpoczyna się i kończy wykonywanie programu.
-//
-
+﻿#include <SDL.h>
 #include <iostream>
 
-int main()
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
+
+int main(int argc, char* args[])
 {
-    std::cout << "Hello World!\n";
+    SDL_Window* window = NULL;
+    SDL_Surface* screenSurface = NULL;
+    SDL_Surface* image = NULL;
+
+    if (SDL_Init(SDL_INIT_VIDEO) == -1) return -1;
+
+    window = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+
+    if (window != nullptr)
+    {
+        screenSurface = SDL_GetWindowSurface(window);
+        SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+        SDL_UpdateWindowSurface(window);
+
+        image = SDL_LoadBMP("image.bmp");
+        if (image != nullptr)
+        {
+            SDL_BlitSurface(image, NULL, screenSurface, NULL);
+            SDL_UpdateWindowSurface(window);
+        }
+
+        SDL_Delay(6000);
+        SDL_DestroyWindow(window);
+    }
+
+
+    SDL_Quit();
+    return 0;
 }
 
-// Uruchomienie programu: Ctrl + F5 lub menu Debugowanie > Uruchom bez debugowania
-// Debugowanie programu: F5 lub menu Debugowanie > Rozpocznij debugowanie
-
-// Porady dotyczące rozpoczynania pracy:
-//   1. Użyj okna Eksploratora rozwiązań, aby dodać pliki i zarządzać nimi
-//   2. Użyj okna programu Team Explorer, aby nawiązać połączenie z kontrolą źródła
-//   3. Użyj okna Dane wyjściowe, aby sprawdzić dane wyjściowe kompilacji i inne komunikaty
-//   4. Użyj okna Lista błędów, aby zobaczyć błędy
-//   5. Wybierz pozycję Projekt > Dodaj nowy element, aby utworzyć nowe pliki kodu, lub wybierz pozycję Projekt > Dodaj istniejący element, aby dodać istniejące pliku kodu do projektu
-//   6. Aby w przyszłości ponownie otworzyć ten projekt, przejdź do pozycji Plik > Otwórz > Projekt i wybierz plik sln
