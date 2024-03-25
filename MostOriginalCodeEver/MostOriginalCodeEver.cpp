@@ -9,6 +9,7 @@ int main(int argc, char* args[])
     SDL_Window* window = NULL;
     SDL_Surface* screenSurface = NULL;
     SDL_Surface* image = NULL;
+    SDL_Surface* turtle = NULL;
 
     if (SDL_Init(SDL_INIT_VIDEO) == -1) return -1;
 
@@ -24,6 +25,13 @@ int main(int argc, char* args[])
         if (image != nullptr)
         {
             SDL_BlitSurface(image, NULL, screenSurface, NULL);
+            SDL_UpdateWindowSurface(window);
+        }
+
+        turtle = SDL_LoadBMP("Turtle.bmp");
+        if (turtle != nullptr)
+        {
+            SDL_BlitSurface(turtle, NULL, screenSurface, NULL);
             SDL_UpdateWindowSurface(window);
         }
 
