@@ -18,42 +18,27 @@ int main(int argc, char* args[])
     image = SDL_LoadBMP("image.bmp");
     turtle = SDL_LoadBMP("Turtle.bmp");
 
-    if (window != nullptr)
+    if (window == nullptr) return -1;
+    SDL_Event event;
+    bool bGameLoop = true;
+    while (bGameLoop)
     {
-        
-
-        
-        //if (image != nullptr)
-        //{
-            
-            //SDL_UpdateWindowSurface(window);
-        //}
-
-        
-        //if (turtle != nullptr)
-        //{
-            
-            //SDL_UpdateWindowSurface(window);
-        //}
-
-        SDL_Event event;
-        while (true)
+        while (SDL_PollEvent(&event))
         {
-            while (SDL_PollEvent(&event))
-            {
                 if (event.type == SDL_QUIT)
                 {
-                    SDL_DestroyWindow(window);
-                    SDL_Quit();
-                    return 0;
+                    bGameLoop = false;
+                    break;
                 }
-            }
-            SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-            if(image != nullptr) SDL_BlitSurface(image, NULL, screenSurface, NULL);
-            if (turtle != nullptr) SDL_BlitSurface(turtle, NULL, screenSurface, NULL);
-            SDL_UpdateWindowSurface(window);
         }
+        SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+        if(image != nullptr) SDL_BlitSurface(image, NULL, screenSurface, NULL);
+        if (turtle != nullptr) SDL_BlitSurface(turtle, NULL, screenSurface, NULL);
+        SDL_UpdateWindowSurface(window);
     }
+
+    SDL_DestroyWindow(window);
+    SDL_Quit();
     return 0;
 }
 
