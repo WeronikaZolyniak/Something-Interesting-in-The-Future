@@ -14,26 +14,27 @@ int main(int argc, char* args[])
     if (SDL_Init(SDL_INIT_VIDEO) == -1) return -1;
 
     window = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+    screenSurface = SDL_GetWindowSurface(window);
+    image = SDL_LoadBMP("image.bmp");
+    turtle = SDL_LoadBMP("Turtle.bmp");
 
     if (window != nullptr)
     {
-        screenSurface = SDL_GetWindowSurface(window);
-        SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-        SDL_UpdateWindowSurface(window);
+        
 
-        image = SDL_LoadBMP("image.bmp");
-        if (image != nullptr)
-        {
-            SDL_BlitSurface(image, NULL, screenSurface, NULL);
-            SDL_UpdateWindowSurface(window);
-        }
+        
+        //if (image != nullptr)
+        //{
+            
+            //SDL_UpdateWindowSurface(window);
+        //}
 
-        turtle = SDL_LoadBMP("Turtle.bmp");
-        if (turtle != nullptr)
-        {
-            SDL_BlitSurface(turtle, NULL, screenSurface, NULL);
-            SDL_UpdateWindowSurface(window);
-        }
+        
+        //if (turtle != nullptr)
+        //{
+            
+            //SDL_UpdateWindowSurface(window);
+        //}
 
         SDL_Event event;
         while (true)
@@ -47,6 +48,10 @@ int main(int argc, char* args[])
                     return 0;
                 }
             }
+            SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+            if(image != nullptr) SDL_BlitSurface(image, NULL, screenSurface, NULL);
+            if (turtle != nullptr) SDL_BlitSurface(turtle, NULL, screenSurface, NULL);
+            SDL_UpdateWindowSurface(window);
         }
     }
     return 0;
