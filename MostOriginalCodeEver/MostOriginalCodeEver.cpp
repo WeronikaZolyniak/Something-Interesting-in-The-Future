@@ -42,10 +42,10 @@ int main(int argc, char* args[])
                             turtlePosition.y -= 4;
                             break;
                         case SDLK_DOWN:
-                            turtlePosition.y += 4;
+                            if (turtlePosition.y + 104 < SDL_GetWindowSurface(window)->h) turtlePosition.y += 4;
                             break;
                         case SDLK_RIGHT:
-                            turtlePosition.x += 4;
+                            if (turtlePosition.x + 104 < SDL_GetWindowSurface(window)->w) turtlePosition.x += 4;
                             break;
                         case SDLK_LEFT:
                             turtlePosition.x -= 4;
