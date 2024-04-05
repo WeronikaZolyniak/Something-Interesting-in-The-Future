@@ -17,7 +17,9 @@ void Init()
 
     window = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     image = SDL_LoadBMP("image.bmp");
+    SDL_assert(image != nullptr);
     turtle = SDL_LoadBMP("Turtle.bmp");
+    SDL_assert(turtle != nullptr);
 
     if (window == nullptr) exit(-1);
 }
@@ -26,8 +28,8 @@ void UpdateImage()
 {
     screenSurface = SDL_GetWindowSurface(window);
     SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-    if (image != nullptr) SDL_BlitSurface(image, NULL, screenSurface, NULL);
-    if (turtle != nullptr) SDL_BlitSurface(turtle, NULL, screenSurface, &turtlePosition);
+    SDL_BlitSurface(image, NULL, screenSurface, NULL);
+    SDL_BlitSurface(turtle, NULL, screenSurface, &turtlePosition);
 
     SDL_UpdateWindowSurface(window);
 }
