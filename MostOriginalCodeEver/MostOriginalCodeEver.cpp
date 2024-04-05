@@ -4,25 +4,38 @@
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
-int main(int argc, char* args[])
-{
-    SDL_Window* window = NULL;
-    SDL_Surface* screenSurface = NULL;
-    SDL_Surface* image = NULL;
-    SDL_Surface* turtle = NULL;
-    SDL_Rect turtlePosition;
-    turtlePosition.x = 0;
-    turtlePosition.y = 0;
-    turtlePosition.h = 100;
-    turtlePosition.w = 100;
+SDL_Window* window = NULL;
+SDL_Surface* screenSurface = NULL;
+SDL_Surface* image = NULL;
+SDL_Surface* turtle = NULL;
+SDL_Rect turtlePosition;
 
-    if (SDL_Init(SDL_INIT_VIDEO) == -1) return -1;
+void Init()
+{
+
+    if (SDL_Init(SDL_INIT_VIDEO) == -1) exit(-1);
 
     window = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     image = SDL_LoadBMP("image.bmp");
     turtle = SDL_LoadBMP("Turtle.bmp");
 
-    if (window == nullptr) return -1;
+    if (window == nullptr) exit(-1);
+}
+
+void UpdateImage()
+{
+    screenSurface = SDL_GetWindowSurface(window);
+    SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+    if (image != nullptr) SDL_BlitSurface(image, NULL, screenSurface, NULL);
+    if (turtle != nullptr) SDL_BlitSurface(turtle, NULL, screenSurface, &turtlePosition);
+
+    SDL_UpdateWindowSurface(window);
+}
+
+int main(int argc, char* args[])
+{
+    Init();
+
     SDL_Event event;
     bool bGameLoop = true;
     while (bGameLoop)
@@ -53,11 +66,8 @@ int main(int argc, char* args[])
                     }
                 }
         }
-        screenSurface = SDL_GetWindowSurface(window);
-        SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-        if(image != nullptr) SDL_BlitSurface(image, NULL, screenSurface, NULL);
-        if (turtle != nullptr) SDL_BlitSurface(turtle, NULL, screenSurface, &turtlePosition);
-        SDL_UpdateWindowSurface(window);
+        
+        UpdateImage();
     }
 
     SDL_DestroyWindow(window);
