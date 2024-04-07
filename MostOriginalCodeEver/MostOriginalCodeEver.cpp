@@ -1,5 +1,7 @@
 ﻿#include <SDL.h>
 #include <iostream>
+#include <vector>
+using namespace std;
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
@@ -9,6 +11,18 @@ SDL_Surface* screenSurface = NULL;
 SDL_Surface* image = NULL;
 SDL_Surface* turtle = NULL;
 SDL_Rect turtlePosition;
+
+struct DisplacementVector 
+{
+    int x;
+    int y;
+
+    void operator+=( vector<int> v)
+    {
+        x += v[0];
+        y += v[1];
+    }
+} turtleDisplacementVector;
 
 void Init()
 {
@@ -54,21 +68,22 @@ int main(int argc, char* args[])
                     switch (event.key.keysym.sym)
                     {
                         case SDLK_UP:
-                            turtlePosition.y -= 4;
+                            turtleDisplacementVector += vector<int>{0, -4};
                             break;
                         case SDLK_DOWN:
-                            if (turtlePosition.y + 104 < SDL_GetWindowSurface(window)->h) turtlePosition.y += 4;
+                            if (turtlePosition.y + 104 < SDL_GetWindowSurface(window)->h) turtleDisplacementVector += vector<int>{0, 4};
                             break;
                         case SDLK_RIGHT:
-                            if (turtlePosition.x + 104 < SDL_GetWindowSurface(window)->w) turtlePosition.x += 4;
+                            if (turtlePosition.x + 104 < SDL_GetWindowSurface(window)->w) turtleDisplacementVector += vector<int>{4, 0};
                             break;
                         case SDLK_LEFT:
-                            turtlePosition.x -= 4;
+                            turtleDisplacementVector += vector<int>{-4, 0};
                             break;
                     }
                 }
         }
-        
+        turtlePosition.x = turtleDisplacementVector.x;
+        turtlePosition.y = turtleDisplacementVector.y;
         UpdateImage();
     }
 
