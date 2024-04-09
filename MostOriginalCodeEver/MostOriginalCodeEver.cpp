@@ -27,7 +27,7 @@ struct DisplacementVector
 void Init()
 {
 
-    if (SDL_Init(SDL_INIT_VIDEO) == -1) exit(-1);
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) exit(-1);
 
     window = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     image = SDL_LoadBMP("image.bmp");
@@ -68,7 +68,7 @@ int main(int argc, char* args[])
                     switch (event.key.keysym.sym)
                     {
                         case SDLK_UP:
-                            turtleDisplacementVector += vector<int>{0, -4};
+                            if (turtlePosition.y > 0) turtleDisplacementVector += vector<int>{0, -4};
                             break;
                         case SDLK_DOWN:
                             if (turtlePosition.y + 104 < SDL_GetWindowSurface(window)->h) turtleDisplacementVector += vector<int>{0, 4};
@@ -77,7 +77,7 @@ int main(int argc, char* args[])
                             if (turtlePosition.x + 104 < SDL_GetWindowSurface(window)->w) turtleDisplacementVector += vector<int>{4, 0};
                             break;
                         case SDLK_LEFT:
-                            turtleDisplacementVector += vector<int>{-4, 0};
+                            if (turtlePosition.x > 0) turtleDisplacementVector += vector<int>{-4, 0};
                             break;
                     }
                 }
