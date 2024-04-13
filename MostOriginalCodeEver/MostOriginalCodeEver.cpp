@@ -25,6 +25,7 @@ SDL_Surface* turtle = NULL;
 SDL_Rect turtlePosition;
 Vector2 turtleDisplacementVector;
 Mix_Chunk* turtleWalkSound;
+Mix_Music* bgMusic;
 
 void Init()
 {
@@ -39,6 +40,9 @@ void Init()
     SDL_assert(turtle != nullptr);
 
     turtleWalkSound = Mix_LoadWAV("turtleWalkSound.wav");
+    SDL_assert(turtleWalkSound != nullptr);
+    bgMusic = Mix_LoadMUS("backgroundMusic.wav");
+    SDL_assert(bgMusic != nullptr);
 
     if (window == nullptr) exit(-1);
 }
@@ -56,6 +60,9 @@ void UpdateImage()
 int main(int argc, char* args[])
 {
     Init();
+
+    Mix_PlayMusic(bgMusic, -1);
+    Mix_VolumeMusic(30);
 
     SDL_Event event;
     bool bGameLoop = true;
@@ -105,6 +112,7 @@ int main(int argc, char* args[])
 
     SDL_DestroyWindow(window);
     Mix_FreeChunk(turtleWalkSound);
+    Mix_FreeMusic(bgMusic);
     Mix_Quit();
     SDL_Quit();
     return 0;
