@@ -1,39 +1,44 @@
 ﻿#include <SDL.h>
+#include <SDL_mixer.h>
 #include <iostream>
-#include <vector>
 using namespace std;
 
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
+
+struct Vector2
+{
+    float x;
+    float y;
+
+    void operator+=(Vector2 v)
+    {
+        x += v.x;
+        y += v.y;
+    }
+};
 
 SDL_Window* window = NULL;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* image = NULL;
 SDL_Surface* turtle = NULL;
 SDL_Rect turtlePosition;
-
-struct DisplacementVector 
-{
-    int x;
-    int y;
-
-    void operator+=( vector<int> v)
-    {
-        x += v[0];
-        y += v[1];
-    }
-} turtleDisplacementVector;
+Vector2 turtleDisplacementVector;
+Mix_Chunk* turtleWalkSound;
 
 void Init()
 {
 
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) exit(-1);
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == -1) exit(-1);
 
     window = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
     image = SDL_LoadBMP("image.bmp");
     SDL_assert(image != nullptr);
     turtle = SDL_LoadBMP("Turtle.bmp");
     SDL_assert(turtle != nullptr);
+
+    turtleWalkSound = Mix_LoadWAV("turtleWalkSound.wav");
 
     if (window == nullptr) exit(-1);
 }
@@ -68,17 +73,28 @@ int main(int argc, char* args[])
                     switch (event.key.keysym.sym)
                     {
                         case SDLK_UP:
-                            if (turtlePosition.y > 0) turtleDisplacementVector += vector<int>{0, -4};
+                            if (turtlePosition.y > 0) turtleDisplacementVector += {0, -4};
+                            if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
                             break;
                         case SDLK_DOWN:
-                            if (turtlePosition.y + 104 < SDL_GetWindowSurface(window)->h) turtleDisplacementVector += vector<int>{0, 4};
+                            if (turtlePosition.y + 104 < SDL_GetWindowSurface(window)->h) turtleDisplacementVector += {0, 4};
+                            if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
                             break;
                         case SDLK_RIGHT:
-                            if (turtlePosition.x + 104 < SDL_GetWindowSurface(window)->w) turtleDisplacementVector += vector<int>{4, 0};
+                            if (turtlePosition.x + 104 < SDL_GetWindowSurface(window)->w) turtleDisplacementVector += {4, 0};
+                            if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
                             break;
                         case SDLK_LEFT:
-                            if (turtlePosition.x > 0) turtleDisplacementVector += vector<int>{-4, 0};
+                            if (turtlePosition.x > 0) turtleDisplacementVector += {-4, 0};
+                            if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
                             break;
+                    }
+                }
+                if (event.type == SDL_KEYUP)
+                {
+                    if (event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_LEFT)
+                    {
+                        if (Mix_Playing(1) != 0) Mix_HaltChannel(1);
                     }
                 }
         }
@@ -88,6 +104,8 @@ int main(int argc, char* args[])
     }
 
     SDL_DestroyWindow(window);
+    Mix_FreeChunk(turtleWalkSound);
+    Mix_Quit();
     SDL_Quit();
     return 0;
 }
