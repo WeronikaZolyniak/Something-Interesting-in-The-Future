@@ -22,6 +22,7 @@ SDL_Window* window = NULL;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* image = NULL;
 SDL_Surface* turtle = NULL;
+SDL_Surface* octopus = NULL;
 SDL_Rect turtlePosition;
 Vector2 turtleDisplacementVector;
 Mix_Chunk* turtleWalkSound;
@@ -29,22 +30,22 @@ Mix_Music* bgMusic;
 
 void Init()
 {
-
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) exit(-1);
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == -1) exit(-1);
 
     window = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_RESIZABLE);
+    if (window == nullptr) exit(-1);
+
     image = SDL_LoadBMP("image.bmp");
     SDL_assert(image != nullptr);
     turtle = SDL_LoadBMP("Turtle.bmp");
     SDL_assert(turtle != nullptr);
+    octopus = SDL_LoadBMP("octopus.bmp");
 
     turtleWalkSound = Mix_LoadWAV("turtleWalkSound.wav");
     SDL_assert(turtleWalkSound != nullptr);
     bgMusic = Mix_LoadMUS("backgroundMusic.wav");
     SDL_assert(bgMusic != nullptr);
-
-    if (window == nullptr) exit(-1);
 }
 
 void UpdateImage()
@@ -53,6 +54,7 @@ void UpdateImage()
     SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
     SDL_BlitSurface(image, NULL, screenSurface, NULL);
     SDL_BlitSurface(turtle, NULL, screenSurface, &turtlePosition);
+    SDL_BlitSurface(octopus, NULL, screenSurface, NULL);
 
     SDL_UpdateWindowSurface(window);
 }
