@@ -24,7 +24,10 @@ SDL_Surface* image = NULL;
 SDL_Surface* turtle = NULL;
 SDL_Surface* octopus = NULL;
 SDL_Rect turtlePosition;
+SDL_Rect octopusPosition;
 Vector2 turtleDisplacementVector;
+Vector2 octopusDisplacementVector;
+int octopusDirection = 1;
 Mix_Chunk* turtleWalkSound;
 Mix_Music* bgMusic;
 
@@ -54,9 +57,19 @@ void UpdateImage()
     SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
     SDL_BlitSurface(image, NULL, screenSurface, NULL);
     SDL_BlitSurface(turtle, NULL, screenSurface, &turtlePosition);
-    SDL_BlitSurface(octopus, NULL, screenSurface, NULL);
+    SDL_BlitSurface(octopus, NULL, screenSurface, &octopusPosition);
 
     SDL_UpdateWindowSurface(window);
+}
+
+void UpdateOctopusPosition()
+{
+    if (octopusPosition.x + 104 >= SDL_GetWindowSurface(window)->w) octopusDirection = -1;
+    else if (octopusPosition.x <= 0) octopusDirection = 1;
+    float x = 0.05 * octopusDirection;
+
+    octopusDisplacementVector += {x, 0};
+    octopusPosition.x = octopusDisplacementVector.x;
 }
 
 int main(int argc, char* args[])
@@ -109,7 +122,8 @@ int main(int argc, char* args[])
         }
         turtlePosition.x = turtleDisplacementVector.x;
         turtlePosition.y = turtleDisplacementVector.y;
-        UpdateImage();
+        UpdateOctopusPosition();
+        UpdateImage();  
     }
 
     SDL_DestroyWindow(window);
