@@ -1,5 +1,6 @@
 ﻿#include <SDL.h>
 #include <SDL_mixer.h>
+#include <utility>
 #include <iostream>
 using namespace std;
 
@@ -18,15 +19,20 @@ struct Vector2
     }
 };
 
+inline SDL_Rect operator+(SDL_Rect pos, Vector2 v)
+{
+    
+    pos.x += v.x;
+    pos.y += v.y;
+    return pos;
+}
+
 class Actor
 {
     public:
         SDL_Surface* image;
         SDL_Rect position;
-        Vector2 displacementVector;
 };
-
-
 
 SDL_Window* window = NULL;
 SDL_Surface* screenSurface = NULL;
@@ -60,6 +66,47 @@ void Init()
     SDL_assert(bgMusic != nullptr);
 }
 
+void InputHandling(SDL_Event &event, bool &bGameLoop)
+{
+    while (SDL_PollEvent(&event))
+    {
+        if (event.type == SDL_QUIT)
+        {
+            bGameLoop = false;
+            break;
+        }
+        if (event.type == SDL_KEYDOWN)
+        {
+            switch (event.key.keysym.sym)
+            {
+            case SDLK_UP:
+                if (Turtle.position.y > 0)Turtle.position = Turtle.position + Vector2{0, -4 };
+                if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
+                break;
+            case SDLK_DOWN:
+                if (Turtle.position.y + 104 < SDL_GetWindowSurface(window)->h)Turtle.position = Turtle.position + Vector2{0, 4 };
+                if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
+                break;
+            case SDLK_RIGHT:
+                if (Turtle.position.x + 104 < SDL_GetWindowSurface(window)->w)Turtle.position = Turtle.position + Vector2{4, 0};
+                if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
+                break;
+            case SDLK_LEFT:
+                if (Turtle.position.x > 0) Turtle.position = Turtle.position + Vector2{-4, 0 };
+                if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
+                break;
+            }
+        }
+        if (event.type == SDL_KEYUP)
+        {
+            if (event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_LEFT)
+            {
+                if (Mix_Playing(1) != 0) Mix_HaltChannel(1);
+            }
+        }
+    }
+}
+
 void UpdateImage()
 {
     screenSurface = SDL_GetWindowSurface(window);
@@ -75,10 +122,9 @@ void UpdateOctopusPosition()
 {
     if (Octopus.position.x + 104 >= SDL_GetWindowSurface(window)->w) octopusDirection = -1;
     else if (Octopus.position.x <= 0) octopusDirection = 1;
-    float x = 0.05 * octopusDirection;
+    float x =   octopusDirection;
 
-    Octopus.displacementVector += {x, 0};
-    Octopus.position.x = Octopus.displacementVector.x;
+    Octopus.position = Octopus.position + Vector2{x,0};
 }
 
 int main(int argc, char* args[])
@@ -92,45 +138,7 @@ int main(int argc, char* args[])
     bool bGameLoop = true;
     while (bGameLoop)
     {
-        while (SDL_PollEvent(&event))
-        {
-                if (event.type == SDL_QUIT)
-                {
-                    bGameLoop = false;
-                    break;
-                }
-                if (event.type == SDL_KEYDOWN)
-                {
-                    switch (event.key.keysym.sym)
-                    {
-                        case SDLK_UP:
-                            if (Turtle.position.y > 0) Turtle.displacementVector += {0, -4};
-                            if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
-                            break;
-                        case SDLK_DOWN:
-                            if (Turtle.position.y + 104 < SDL_GetWindowSurface(window)->h) Turtle.displacementVector += {0, 4};
-                            if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
-                            break;
-                        case SDLK_RIGHT:
-                            if (Turtle.position.x + 104 < SDL_GetWindowSurface(window)->w) Turtle.displacementVector += {4, 0};
-                            if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
-                            break;
-                        case SDLK_LEFT:
-                            if (Turtle.position.x > 0) Turtle.displacementVector += {-4, 0};
-                            if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
-                            break;
-                    }
-                }
-                if (event.type == SDL_KEYUP)
-                {
-                    if (event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_LEFT)
-                    {
-                        if (Mix_Playing(1) != 0) Mix_HaltChannel(1);
-                    }
-                }
-        }
-        Turtle.position.x = Turtle.displacementVector.x;
-        Turtle.position.y = Turtle.displacementVector.y;
+        InputHandling(event, bGameLoop);
         UpdateOctopusPosition();
         UpdateImage();  
     }
