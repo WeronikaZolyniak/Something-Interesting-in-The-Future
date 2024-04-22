@@ -18,18 +18,25 @@ struct Vector2
     }
 };
 
+class Actor
+{
+    public:
+        SDL_Surface* image;
+        SDL_Rect position;
+        Vector2 displacementVector;
+};
+
+
+
 SDL_Window* window = NULL;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* image = NULL;
-SDL_Surface* turtle = NULL;
-SDL_Surface* octopus = NULL;
-SDL_Rect turtlePosition;
-SDL_Rect octopusPosition;
-Vector2 turtleDisplacementVector;
-Vector2 octopusDisplacementVector;
 int octopusDirection = 1;
 Mix_Chunk* turtleWalkSound;
 Mix_Music* bgMusic;
+
+Actor Turtle;
+Actor Octopus;
 
 void Init()
 {
@@ -41,9 +48,11 @@ void Init()
 
     image = SDL_LoadBMP("image.bmp");
     SDL_assert(image != nullptr);
-    turtle = SDL_LoadBMP("Turtle.bmp");
-    SDL_assert(turtle != nullptr);
-    octopus = SDL_LoadBMP("octopus.bmp");
+
+    Turtle.image = SDL_LoadBMP("Turtle.bmp");
+    SDL_assert(Turtle.image != nullptr);
+    Octopus.image = SDL_LoadBMP("octopus.bmp"); 
+    SDL_assert(Octopus.image != nullptr);
 
     turtleWalkSound = Mix_LoadWAV("turtleWalkSound.wav");
     SDL_assert(turtleWalkSound != nullptr);
@@ -56,20 +65,20 @@ void UpdateImage()
     screenSurface = SDL_GetWindowSurface(window);
     SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
     SDL_BlitSurface(image, NULL, screenSurface, NULL);
-    SDL_BlitSurface(turtle, NULL, screenSurface, &turtlePosition);
-    SDL_BlitSurface(octopus, NULL, screenSurface, &octopusPosition);
+    SDL_BlitSurface(Turtle.image, NULL, screenSurface, &Turtle.position);
+    SDL_BlitSurface(Octopus.image, NULL, screenSurface, &Octopus.position);
 
     SDL_UpdateWindowSurface(window);
 }
 
 void UpdateOctopusPosition()
 {
-    if (octopusPosition.x + 104 >= SDL_GetWindowSurface(window)->w) octopusDirection = -1;
-    else if (octopusPosition.x <= 0) octopusDirection = 1;
+    if (Octopus.position.x + 104 >= SDL_GetWindowSurface(window)->w) octopusDirection = -1;
+    else if (Octopus.position.x <= 0) octopusDirection = 1;
     float x = 0.05 * octopusDirection;
 
-    octopusDisplacementVector += {x, 0};
-    octopusPosition.x = octopusDisplacementVector.x;
+    Octopus.displacementVector += {x, 0};
+    Octopus.position.x = Octopus.displacementVector.x;
 }
 
 int main(int argc, char* args[])
@@ -95,19 +104,19 @@ int main(int argc, char* args[])
                     switch (event.key.keysym.sym)
                     {
                         case SDLK_UP:
-                            if (turtlePosition.y > 0) turtleDisplacementVector += {0, -4};
+                            if (Turtle.position.y > 0) Turtle.displacementVector += {0, -4};
                             if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
                             break;
                         case SDLK_DOWN:
-                            if (turtlePosition.y + 104 < SDL_GetWindowSurface(window)->h) turtleDisplacementVector += {0, 4};
+                            if (Turtle.position.y + 104 < SDL_GetWindowSurface(window)->h) Turtle.displacementVector += {0, 4};
                             if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
                             break;
                         case SDLK_RIGHT:
-                            if (turtlePosition.x + 104 < SDL_GetWindowSurface(window)->w) turtleDisplacementVector += {4, 0};
+                            if (Turtle.position.x + 104 < SDL_GetWindowSurface(window)->w) Turtle.displacementVector += {4, 0};
                             if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
                             break;
                         case SDLK_LEFT:
-                            if (turtlePosition.x > 0) turtleDisplacementVector += {-4, 0};
+                            if (Turtle.position.x > 0) Turtle.displacementVector += {-4, 0};
                             if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
                             break;
                     }
@@ -120,8 +129,8 @@ int main(int argc, char* args[])
                     }
                 }
         }
-        turtlePosition.x = turtleDisplacementVector.x;
-        turtlePosition.y = turtleDisplacementVector.y;
+        Turtle.position.x = Turtle.displacementVector.x;
+        Turtle.position.y = Turtle.displacementVector.y;
         UpdateOctopusPosition();
         UpdateImage();  
     }
