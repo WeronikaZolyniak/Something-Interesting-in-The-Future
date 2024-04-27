@@ -2,22 +2,8 @@
 #include <SDL_mixer.h>
 #include <utility>
 #include <iostream>
+#include "MostOriginalHeader.h"
 using namespace std;
-
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
-
-struct Vector2
-{
-    float x;
-    float y;
-
-    void operator+=(Vector2 v)
-    {
-        x += v.x;
-        y += v.y;
-    }
-};
 
 inline SDL_Rect operator+(SDL_Rect pos, Vector2 v)
 {
@@ -26,23 +12,6 @@ inline SDL_Rect operator+(SDL_Rect pos, Vector2 v)
     pos.y += v.y;
     return pos;
 }
-
-class Actor
-{
-    public:
-        SDL_Surface* image;
-        SDL_Rect position;
-};
-
-SDL_Window* window = NULL;
-SDL_Surface* screenSurface = NULL;
-SDL_Surface* image = NULL;
-int octopusDirection = 1;
-Mix_Chunk* turtleWalkSound;
-Mix_Music* bgMusic;
-
-Actor Turtle;
-Actor Octopus;
 
 void Init()
 {
@@ -122,7 +91,7 @@ void UpdateOctopusPosition()
 {
     if (Octopus.position.x + 104 >= SDL_GetWindowSurface(window)->w) octopusDirection = -1;
     else if (Octopus.position.x <= 0) octopusDirection = 1;
-    float x =   octopusDirection;
+    float x =  0.05 *  octopusDirection;
 
     Octopus.position = Octopus.position + Vector2{x,0};
 }

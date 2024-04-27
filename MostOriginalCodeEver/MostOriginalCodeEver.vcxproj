@@ -136,6 +136,9 @@
   <ItemGroup>
     <ClCompile Include="MostOriginalCodeEver.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="MostOriginalHeader.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
