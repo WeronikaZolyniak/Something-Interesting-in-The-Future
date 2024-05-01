@@ -5,13 +5,13 @@
 #include "MostOriginalHeader.h"
 using namespace std;
 
-inline SDL_Rect operator+(SDL_Rect pos, Vector2 v)
+/*inline SDL_Rect operator+(SDL_Rect pos, Vector2 v)
 {
     
     pos.x += v.x;
     pos.y += v.y;
     return pos;
-}
+}*/
 
 void Init()
 {
@@ -26,11 +26,12 @@ void Init()
 
     Turtle.image = SDL_LoadBMP("Turtle.bmp");
     SDL_assert(Turtle.image != nullptr);
+    Turtle.walkSound = Mix_LoadWAV("turtleWalkSound.wav");
+    SDL_assert(Turtle.walkSound != nullptr);
+
     Octopus.image = SDL_LoadBMP("octopus.bmp"); 
     SDL_assert(Octopus.image != nullptr);
 
-    turtleWalkSound = Mix_LoadWAV("turtleWalkSound.wav");
-    SDL_assert(turtleWalkSound != nullptr);
     bgMusic = Mix_LoadMUS("backgroundMusic.wav");
     SDL_assert(bgMusic != nullptr);
 }
@@ -49,20 +50,16 @@ void InputHandling(SDL_Event &event, bool &bGameLoop)
             switch (event.key.keysym.sym)
             {
             case SDLK_UP:
-                if (Turtle.position.y > 0)Turtle.position = Turtle.position + Vector2{0, -4 };
-                if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
+                UpdateActorPosition(Turtle, Vector2{ 0,-4 });
                 break;
             case SDLK_DOWN:
-                if (Turtle.position.y + 104 < SDL_GetWindowSurface(window)->h)Turtle.position = Turtle.position + Vector2{0, 4 };
-                if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
+                UpdateActorPosition(Turtle, Vector2{ 0,4 });
                 break;
             case SDLK_RIGHT:
-                if (Turtle.position.x + 104 < SDL_GetWindowSurface(window)->w)Turtle.position = Turtle.position + Vector2{4, 0};
-                if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
+                UpdateActorPosition(Turtle, Vector2{ 4,0 });
                 break;
             case SDLK_LEFT:
-                if (Turtle.position.x > 0) Turtle.position = Turtle.position + Vector2{-4, 0 };
-                if (Mix_Playing(1) == 0) Mix_PlayChannel(1, turtleWalkSound, 0);
+                UpdateActorPosition(Turtle, Vector2{ -4,0 });
                 break;
             }
         }
@@ -81,19 +78,31 @@ void UpdateImage()
     screenSurface = SDL_GetWindowSurface(window);
     SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
     SDL_BlitSurface(image, NULL, screenSurface, NULL);
-    SDL_BlitSurface(Turtle.image, NULL, screenSurface, &Turtle.position);
-    SDL_BlitSurface(Octopus.image, NULL, screenSurface, &Octopus.position);
+    SDL_BlitSurface(Turtle.image, NULL, screenSurface, &Turtle.rect);
+    SDL_BlitSurface(Octopus.image, NULL, screenSurface, &Octopus.rect);
 
     SDL_UpdateWindowSurface(window);
+}
+
+void UpdateActorPosition(Actor &actor, Vector2 vector)
+{
+    if (actor.position.y + vector.y < 0 || actor.position.y + vector.y + 100 > SCREEN_HEIGHT) return;
+    if (actor.position.x + vector.x < 0 || actor.position.x + vector.x + 100 > SCREEN_WIDTH) return;
+
+    actor.position += vector;
+    actor.rect.x = actor.position.x;
+    actor.rect.y = actor.position.y;
+
+    if (Mix_Playing(1) == 0) Mix_PlayChannel(1, actor.walkSound, 0);
 }
 
 void UpdateOctopusPosition()
 {
     if (Octopus.position.x + 104 >= SDL_GetWindowSurface(window)->w) octopusDirection = -1;
-    else if (Octopus.position.x <= 0) octopusDirection = 1;
+    else if (Octopus.position.x <= 10) octopusDirection = 1;
     float x =  0.05 *  octopusDirection;
-
-    Octopus.position = Octopus.position + Vector2{x,0};
+    UpdateActorPosition(Octopus, Vector2{ x,0 });
+    //Octopus.position = Octopus.position + Vector2{x,0};
 }
 
 int main(int argc, char* args[])
@@ -113,7 +122,7 @@ int main(int argc, char* args[])
     }
 
     SDL_DestroyWindow(window);
-    Mix_FreeChunk(turtleWalkSound);
+    Mix_FreeChunk(Turtle.walkSound);
     Mix_FreeMusic(bgMusic);
     Mix_Quit();
     SDL_Quit();

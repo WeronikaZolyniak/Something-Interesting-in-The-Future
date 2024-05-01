@@ -18,15 +18,19 @@ struct Vector2
 struct Actor
 {
     SDL_Surface* image;
-    SDL_Rect position;
+    Vector2 position;
+    SDL_Rect rect;
+    Mix_Chunk* walkSound;
 };
 
 SDL_Window* window = NULL;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* image = NULL;
 int octopusDirection = 1;
-Mix_Chunk* turtleWalkSound;
+
 Mix_Music* bgMusic;
 
 Actor Turtle;
 Actor Octopus;
+
+void UpdateActorPosition(Actor& actor, Vector2 vector);
