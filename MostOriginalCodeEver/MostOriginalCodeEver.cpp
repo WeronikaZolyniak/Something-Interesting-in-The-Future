@@ -78,8 +78,8 @@ void UpdateImage()
 
 void UpdateActorPosition(Actor &actor, Vector2 vector)
 {
-    if (actor.position.y + vector.y < 0 || actor.position.y + vector.y + 100 > SCREEN_HEIGHT) return;
-    if (actor.position.x + vector.x < 0 || actor.position.x + vector.x + 100 > SCREEN_WIDTH) return;
+    if (actor.position.y + vector.y < 0 || actor.position.y + vector.y + actor.image->h > SCREEN_HEIGHT) return;
+    if (actor.position.x + vector.x < 0 || actor.position.x + vector.x + actor.image->w > SCREEN_WIDTH) return;
 
     actor.position += vector;
     actor.rect.x = actor.position.x;
@@ -90,11 +90,10 @@ void UpdateActorPosition(Actor &actor, Vector2 vector)
 
 void UpdateOctopusPosition()
 {
-    if (Octopus.position.x + 104 >= SDL_GetWindowSurface(window)->w) octopusDirection = -1;
+    if (Octopus.position.x + Octopus.image->w + 4 >= SDL_GetWindowSurface(window)->w) octopusDirection = -1;
     else if (Octopus.position.x <= 10) octopusDirection = 1;
     float x =  0.05 *  octopusDirection;
     UpdateActorPosition(Octopus, Vector2{ x,0 });
-    //Octopus.position = Octopus.position + Vector2{x,0};
 }
 
 int main(int argc, char* args[])
