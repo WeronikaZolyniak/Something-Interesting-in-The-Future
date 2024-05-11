@@ -25,7 +25,7 @@ struct Actor
 
 SDL_Window* window = NULL;
 SDL_Surface* screenSurface = NULL;
-SDL_Surface* image = NULL;
+SDL_Surface* bgImage = NULL;
 int octopusDirection = 1;
 
 Mix_Music* bgMusic;

@@ -5,14 +5,6 @@
 #include "MostOriginalHeader.h"
 using namespace std;
 
-/*inline SDL_Rect operator+(SDL_Rect pos, Vector2 v)
-{
-    
-    pos.x += v.x;
-    pos.y += v.y;
-    return pos;
-}*/
-
 void Init()
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) exit(-1);
@@ -21,8 +13,8 @@ void Init()
     window = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_BORDERLESS);
     if (window == nullptr) exit(-1);
 
-    image = SDL_LoadBMP("image.bmp");
-    SDL_assert(image != nullptr);
+    bgImage = SDL_LoadBMP("image.bmp");
+    SDL_assert(bgImage != nullptr);
 
     Turtle.image = SDL_LoadBMP("Turtle.bmp");
     SDL_assert(Turtle.image != nullptr);
@@ -45,24 +37,6 @@ void InputHandling(SDL_Event &event, bool &bGameLoop)
             bGameLoop = false;
             break;
         }
-        if (event.type == SDL_KEYDOWN)
-        {
-            switch (event.key.keysym.sym)
-            {
-            case SDLK_UP:
-                UpdateActorPosition(Turtle, Vector2{ 0,-4 });
-                break;
-            case SDLK_DOWN:
-                UpdateActorPosition(Turtle, Vector2{ 0,4 });
-                break;
-            case SDLK_RIGHT:
-                UpdateActorPosition(Turtle, Vector2{ 4,0 });
-                break;
-            case SDLK_LEFT:
-                UpdateActorPosition(Turtle, Vector2{ -4,0 });
-                break;
-            }
-        }
         if (event.type == SDL_KEYUP)
         {
             if (event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_DOWN || event.key.keysym.sym == SDLK_RIGHT || event.key.keysym.sym == SDLK_LEFT)
@@ -71,13 +45,31 @@ void InputHandling(SDL_Event &event, bool &bGameLoop)
             }
         }
     }
+
+    const Uint8* state = SDL_GetKeyboardState(NULL);
+    if (state[SDL_SCANCODE_RIGHT])
+    {
+        UpdateActorPosition(Turtle, Vector2{ 0.1,0 });
+    }
+    if (state[SDL_SCANCODE_LEFT])
+    {
+        UpdateActorPosition(Turtle, Vector2{ -0.1,0 });
+    }
+    if (state[SDL_SCANCODE_UP])
+    {
+        UpdateActorPosition(Turtle, Vector2{ 0,-0.1 });
+    }
+    if (state[SDL_SCANCODE_DOWN])
+    {
+        UpdateActorPosition(Turtle, Vector2{ 0,0.1 });
+    }
 }
 
 void UpdateImage()
 {
     screenSurface = SDL_GetWindowSurface(window);
     SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-    SDL_BlitSurface(image, NULL, screenSurface, NULL);
+    SDL_BlitSurface(bgImage, NULL, screenSurface, NULL);
     SDL_BlitSurface(Turtle.image, NULL, screenSurface, &Turtle.rect);
     SDL_BlitSurface(Octopus.image, NULL, screenSurface, &Octopus.rect);
 
