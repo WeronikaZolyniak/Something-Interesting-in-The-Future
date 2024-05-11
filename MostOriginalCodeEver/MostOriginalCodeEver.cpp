@@ -49,19 +49,19 @@ void InputHandling(SDL_Event &event, bool &bGameLoop)
     const Uint8* state = SDL_GetKeyboardState(NULL);
     if (state[SDL_SCANCODE_RIGHT])
     {
-        UpdateActorPosition(Turtle, Vector2{ 0.1,0 });
+        InputVector += Vector2{ 0.1,0 };
     }
     if (state[SDL_SCANCODE_LEFT])
     {
-        UpdateActorPosition(Turtle, Vector2{ -0.1,0 });
+        InputVector += Vector2{ -0.1,0 };
     }
     if (state[SDL_SCANCODE_UP])
     {
-        UpdateActorPosition(Turtle, Vector2{ 0,-0.1 });
+        InputVector += Vector2{ 0,-0.1 };
     }
     if (state[SDL_SCANCODE_DOWN])
     {
-        UpdateActorPosition(Turtle, Vector2{ 0,0.1 });
+        InputVector += Vector2{ 0,0.1 };
     }
 }
 
@@ -96,6 +96,12 @@ void UpdateOctopusPosition()
     UpdateActorPosition(Octopus, Vector2{ x,0 });
 }
 
+void UpdateTurtlePosition()
+{
+    UpdateActorPosition(Turtle, InputVector);
+    InputVector = Vector2{ 0,0 };
+}
+
 int main(int argc, char* args[])
 {
     Init();
@@ -109,6 +115,7 @@ int main(int argc, char* args[])
     {
         InputHandling(event, bGameLoop);
         UpdateOctopusPosition();
+        UpdateTurtlePosition();
         UpdateImage();  
     }
 
