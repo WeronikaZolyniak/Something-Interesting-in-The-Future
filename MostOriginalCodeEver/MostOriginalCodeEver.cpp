@@ -85,27 +85,33 @@ void UpdateActorPosition(Actor &actor, Vector2 vector)
     actor.rect.x = actor.position.x;
     actor.rect.y = actor.position.y;
 
+}
+
+void UpdateActorMovement(Actor& actor, Vector2 vector)
+{
+    if (vector.x == 0 && vector.y == 0) return;
+    cout << "after " << Octopus.direction.x << " " << Octopus.direction.y << endl;
+    UpdateActorPosition(actor, vector);
     if (Mix_Playing(1) == 0) Mix_PlayChannel(1, actor.walkSound, 0);
 }
 
 void UpdateOctopusPosition()
 {
-    if (Octopus.position.x + Octopus.image->w + 4 >= SDL_GetWindowSurface(window)->w) octopusDirection = -1;
-    else if (Octopus.position.x <= 10) octopusDirection = 1;
-    float x =  0.05 *  octopusDirection;
-    UpdateActorPosition(Octopus, Vector2{ x,0 });
+    if (Octopus.position.x + Octopus.image->w + 4 >= SDL_GetWindowSurface(window)->w) Octopus.direction = Vector2{ -1,0 };
+    else if (Octopus.position.x <= 10) Octopus.direction = Vector2{ 1,0 };
+    Vector2 v = Octopus.direction * Vector2{0.05,0};
+    UpdateActorMovement(Octopus, v);
 }
 
 void UpdateTurtlePosition()
 {
-    UpdateActorPosition(Turtle, InputVector);
+    UpdateActorMovement(Turtle, InputVector);
     InputVector = Vector2{ 0,0 };
 }
 
 int main(int argc, char* args[])
 {
     Init();
-
     Mix_PlayMusic(bgMusic, -1);
     Mix_VolumeMusic(30);
 
@@ -115,6 +121,7 @@ int main(int argc, char* args[])
     {
         InputHandling(event, bGameLoop);
         UpdateOctopusPosition();
+        
         UpdateTurtlePosition();
         UpdateImage();  
     }
