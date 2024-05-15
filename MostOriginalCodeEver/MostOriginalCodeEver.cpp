@@ -76,6 +76,46 @@ void UpdateImage()
     SDL_UpdateWindowSurface(window);
 }
 
+bool bActorsCollide(Actor actorA, Actor actorB)
+{
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+
+    leftA = actorA.rect.x;
+    rightA = leftA + actorA.rect.w;
+    topA = actorA.rect.y;
+    bottomA = topA + actorA.rect.h;
+
+    leftB = actorB.rect.x;
+    rightB = leftB + actorB.rect.w;
+    topB = actorB.rect.y;
+    bottomB = topB + actorB.rect.h;
+
+    if (bottomA <= topB)
+    {
+        return false;
+    }
+
+    if (topA >= bottomB)
+    {
+        return false;
+    }
+
+    if (rightA <= leftB)
+    {
+        return false;
+    }
+
+    if (leftA >= rightB)
+    {
+        return false;
+    }
+
+    return true;
+}
+
 void UpdateActorPosition(Actor &actor, Vector2 vector)
 {
     if (actor.position.y + vector.y < 0 || actor.position.y + vector.y + actor.image->h > SCREEN_HEIGHT) return;
@@ -90,7 +130,6 @@ void UpdateActorPosition(Actor &actor, Vector2 vector)
 void UpdateActorMovement(Actor& actor, Vector2 vector)
 {
     if (vector.x == 0 && vector.y == 0) return;
-    cout << "after " << Octopus.direction.x << " " << Octopus.direction.y << endl;
     UpdateActorPosition(actor, vector);
     if (Mix_Playing(1) == 0) Mix_PlayChannel(1, actor.walkSound, 0);
 }
@@ -123,7 +162,7 @@ int main(int argc, char* args[])
         UpdateOctopusPosition();
         
         UpdateTurtlePosition();
-        UpdateImage();  
+        UpdateImage();
     }
 
     SDL_DestroyWindow(window);
