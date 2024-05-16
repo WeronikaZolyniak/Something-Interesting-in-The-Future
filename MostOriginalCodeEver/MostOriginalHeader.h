@@ -46,10 +46,13 @@ struct Actor
     Mix_Chunk* walkSound;
 };
 
+uint32_t deltaTime;
+uint32_t lastTickTime = 0;
+uint32_t tickTime = 0;
+
 SDL_Window* window = NULL;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* bgImage = NULL;
-//int octopusDirection = 1;
 
 Mix_Music* bgMusic;
 

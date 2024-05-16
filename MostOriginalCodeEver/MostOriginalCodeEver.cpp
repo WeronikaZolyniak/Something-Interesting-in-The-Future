@@ -137,15 +137,22 @@ void UpdateOctopusPosition()
 {
     if (Octopus.position.x + Octopus.image->w + 4 >= SDL_GetWindowSurface(window)->w) Octopus.direction = Vector2{ -1,0 };
     else if (Octopus.position.x <= 10) Octopus.direction = Vector2{ 1,0 };
-    Vector2 v = Octopus.direction * Vector2{0.05,0};
-    UpdateActorMovement(Octopus, v);
+    Vector2 v = Octopus.direction * Vector2{0.1,0};
+    UpdateActorMovement(Octopus, v * deltaTime);
 }
 
 void UpdateTurtlePosition()
 {
     InputVector.Normalize();
-    UpdateActorMovement(Turtle, InputVector * 0.1);
+    UpdateActorMovement(Turtle, InputVector * 0.3 * deltaTime);
     InputVector = Vector2{ 0,0 };
+}
+
+void CalculateDeltaTime()
+{
+    tickTime = SDL_GetTicks();
+    deltaTime = tickTime - lastTickTime;
+    lastTickTime = tickTime;
 }
 
 int main(int argc, char* args[])
@@ -158,6 +165,7 @@ int main(int argc, char* args[])
     bool bGameLoop = true;
     while (bGameLoop)
     {
+        CalculateDeltaTime();
         InputHandling(event, bGameLoop);
         UpdateOctopusPosition();
         UpdateTurtlePosition();
