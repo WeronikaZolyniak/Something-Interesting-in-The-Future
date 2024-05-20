@@ -19,6 +19,10 @@ void Init()
     SDL_assert(Turtle.image != nullptr);
     Turtle.walkSound = Mix_LoadWAV("turtleWalkSound.wav");
     SDL_assert(Turtle.walkSound != nullptr);
+    Turtle.rect.x = SCREEN_WIDTH / 2 - (Turtle.image->w / 2);
+    Turtle.position.x = Turtle.rect.x;
+    Turtle.rect.y = SCREEN_HEIGHT / 2 - (Turtle.image->h / 2);
+    Turtle.position.y = Turtle.rect.y;
 
     Octopus.image = SDL_LoadBMP("octopus.bmp"); 
     SDL_assert(Octopus.image != nullptr);
@@ -117,13 +121,32 @@ bool bActorsCollide(Actor actorA, Actor actorB)
 
 void UpdateActorPosition(Actor &actor, Vector2 vector)
 {
-    if (actor.position.y + vector.y < 0 || actor.position.y + vector.y + actor.image->h > SCREEN_HEIGHT) return;
-    if (actor.position.x + vector.x < 0 || actor.position.x + vector.x + actor.image->w > SCREEN_WIDTH) return;
+    if (actor.position.y + vector.y < 0 || actor.position.y + vector.y + actor.image->h > SCREEN_HEIGHT)
+    {
+         if (vector.x == 0 || actor.position.x + vector.x < 0 || actor.position.x + vector.x + actor.image->w > SCREEN_WIDTH) return;
+         else
+         {
+             actor.position.x += vector.x;
+             actor.rect.x = actor.position.x;
+             actor.rect.y = actor.position.y;
+             return;
+         }
+    }
+    if (actor.position.x + vector.x < 0 || actor.position.x + vector.x + actor.image->w > SCREEN_WIDTH)
+    {
+        if (vector.y == 0 || actor.position.y + vector.y < 0 || actor.position.y + vector.y + actor.image->h > SCREEN_HEIGHT) return;
+        else
+        {
+            actor.position.y += vector.y;
+            actor.rect.x = actor.position.x;
+            actor.rect.y = actor.position.y;
+            return;
+        }
+    }
 
     actor.position += vector;
     actor.rect.x = actor.position.x;
     actor.rect.y = actor.position.y;
-
 }
 
 void UpdateActorMovement(Actor& actor, Vector2 vector)
@@ -135,9 +158,14 @@ void UpdateActorMovement(Actor& actor, Vector2 vector)
 
 void UpdateOctopusPosition()
 {
-    if (Octopus.position.x + Octopus.image->w + 4 >= SDL_GetWindowSurface(window)->w) Octopus.direction = Vector2{ -1,0 };
-    else if (Octopus.position.x <= 10) Octopus.direction = Vector2{ 1,0 };
-    Vector2 v = Octopus.direction * Vector2{0.1,0};
+    Vector2 v = { 0,0 };
+
+    if (Octopus.position.x < Turtle.position.x) v += Vector2{ 0.1,0 };
+    else if (Octopus.position.x > Turtle.position.x) v += Vector2{ -0.1,0 };
+
+    if (Octopus.position.y < Turtle.position.y) v += Vector2{ 0,0.1 };
+    else if (Octopus.position.y > Turtle.position.y) v += Vector2{ 0,-0.1 };
+
     UpdateActorMovement(Octopus, v * deltaTime);
 }
 
@@ -167,8 +195,9 @@ int main(int argc, char* args[])
     {
         CalculateDeltaTime();
         InputHandling(event, bGameLoop);
-        UpdateOctopusPosition();
         UpdateTurtlePosition();
+        UpdateOctopusPosition();
+        if (bActorsCollide(Turtle, Octopus)) std::cout << "Turtle and octopus collided\n";
         UpdateImage();
     }
 
