@@ -123,6 +123,8 @@ bool bActorsCollide(Actor actorA, Actor actorB)
     return true;
 }
 
+
+
 void UpdateActorPosition(Actor &actor, Vector2 vector)
 {
     if (actor.position.y + vector.y < 0 || actor.position.y + vector.y + actor.image->h > SCREEN_HEIGHT)
@@ -158,6 +160,23 @@ void UpdateActorMovement(Actor& actor, Vector2 vector)
     if (vector.x == 0 && vector.y == 0) return;
     UpdateActorPosition(actor, vector);
     if (Mix_Playing(1) == 0) Mix_PlayChannel(1, actor.walkSound, 0);
+}
+
+void ChangePointLocation()
+{
+    float newx = rand() % (SCREEN_WIDTH - Point.image->w);
+    float newy = rand() % (SCREEN_HEIGHT - Point.image->h);
+    Vector2 v = { newx, newy };
+    
+    Point.position = v;
+    Point.rect.x = Point.position.x;
+    Point.rect.y = Point.position.y;
+}
+
+void CollectPoint()
+{
+    points++;
+    ChangePointLocation();
 }
 
 void UpdateOctopusPosition()
@@ -202,6 +221,7 @@ int main(int argc, char* args[])
         UpdateTurtlePosition();
         UpdateOctopusPosition();
         if (bActorsCollide(Turtle, Octopus)) std::cout << "Turtle and octopus collided\n";
+        if (bActorsCollide(Turtle, Point)) CollectPoint();
         UpdateImage();
     }
 
