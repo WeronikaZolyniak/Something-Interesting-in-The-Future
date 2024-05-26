@@ -58,7 +58,10 @@ Mix_Music* bgMusic;
 
 Actor Turtle;
 Actor Octopus;
+Actor Point;
 
 Vector2 InputVector = { 0,0 };
+
+int points = 0;
 
 void UpdateActorPosition(Actor& actor, Vector2 vector);

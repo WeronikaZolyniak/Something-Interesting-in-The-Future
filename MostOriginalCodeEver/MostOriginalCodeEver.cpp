@@ -27,6 +27,9 @@ void Init()
     Octopus.image = SDL_LoadBMP("octopus.bmp"); 
     SDL_assert(Octopus.image != nullptr);
 
+    Point.image = SDL_LoadBMP("Seashell.bmp");
+    SDL_assert(Point.image != nullptr);
+
     bgMusic = Mix_LoadMUS("backgroundMusic.wav");
     SDL_assert(bgMusic != nullptr);
 }
@@ -75,6 +78,7 @@ void UpdateImage()
     SDL_BlitSurface(bgImage, NULL, screenSurface, NULL);
     SDL_BlitSurface(Turtle.image, NULL, screenSurface, &Turtle.rect);
     SDL_BlitSurface(Octopus.image, NULL, screenSurface, &Octopus.rect);
+    SDL_BlitSurface(Point.image, NULL, screenSurface, &Point.rect);
 
     SDL_UpdateWindowSurface(window);
 }
