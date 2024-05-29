@@ -3,6 +3,7 @@
 #include <SDL_ttf.h>
 #include <utility>
 #include <iostream>
+#include <string>
 #include "MostOriginalHeader.h"
 
 void Init()
@@ -37,7 +38,6 @@ void Init()
 
     font = TTF_OpenFont("Font.ttf", 24);
     SDL_assert(font != nullptr);
-    pointsSurface = TTF_RenderText_Solid(font, "text", SDL_Color{ 0,0,0 });
 }
 
 void InputHandling(SDL_Event &event, bool &bGameLoop)
@@ -80,6 +80,8 @@ void InputHandling(SDL_Event &event, bool &bGameLoop)
 void UpdateImage()
 {
     screenSurface = SDL_GetWindowSurface(window);
+    std::string str_points = std::to_string(points);
+    pointsSurface = TTF_RenderText_Solid(font, str_points.c_str(), SDL_Color{0,0,0});
     SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
     SDL_BlitSurface(bgImage, NULL, screenSurface, NULL);
     SDL_BlitSurface(Turtle.image, NULL, screenSurface, &Turtle.rect);
