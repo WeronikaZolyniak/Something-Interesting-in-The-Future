@@ -53,6 +53,7 @@ uint32_t tickTime = 0;
 SDL_Window* window = NULL;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* bgImage = NULL;
+SDL_Surface* pointsSurface = NULL;
 
 Mix_Music* bgMusic;
 
@@ -63,5 +64,7 @@ Actor Point;
 Vector2 InputVector = { 0,0 };
 
 int points = 0;
+
+TTF_Font* font;
 
 void UpdateActorPosition(Actor& actor, Vector2 vector);

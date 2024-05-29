@@ -1,5 +1,6 @@
 ﻿#include <SDL.h>
 #include <SDL_mixer.h>
+#include <SDL_ttf.h>
 #include <utility>
 #include <iostream>
 #include "MostOriginalHeader.h"
@@ -7,6 +8,7 @@
 void Init()
 {
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) == -1) exit(-1);
+    if (TTF_Init() == -1) exit(-1);
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == -1) exit(-1);
 
     window = SDL_CreateWindow("Test", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_BORDERLESS);
@@ -32,6 +34,10 @@ void Init()
 
     bgMusic = Mix_LoadMUS("backgroundMusic.wav");
     SDL_assert(bgMusic != nullptr);
+
+    font = TTF_OpenFont("Font.ttf", 24);
+    SDL_assert(font != nullptr);
+    pointsSurface = TTF_RenderText_Solid(font, "text", SDL_Color{ 0,0,0 });
 }
 
 void InputHandling(SDL_Event &event, bool &bGameLoop)
@@ -79,6 +85,7 @@ void UpdateImage()
     SDL_BlitSurface(Turtle.image, NULL, screenSurface, &Turtle.rect);
     SDL_BlitSurface(Octopus.image, NULL, screenSurface, &Octopus.rect);
     SDL_BlitSurface(Point.image, NULL, screenSurface, &Point.rect);
+    SDL_BlitSurface(pointsSurface, NULL, screenSurface, NULL);
 
     SDL_UpdateWindowSurface(window);
 }
