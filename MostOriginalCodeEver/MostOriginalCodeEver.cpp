@@ -38,6 +38,9 @@ void Init()
 
     font = TTF_OpenFont("Font.ttf", 24);
     SDL_assert(font != nullptr);
+
+    std::string str_points = std::to_string(points);
+    pointsSurface = TTF_RenderText_Solid(font, str_points.c_str(), SDL_Color{ 0,0,0 });
 }
 
 void InputHandling(SDL_Event &event, bool &bGameLoop)
@@ -80,8 +83,6 @@ void InputHandling(SDL_Event &event, bool &bGameLoop)
 void UpdateImage()
 {
     screenSurface = SDL_GetWindowSurface(window);
-    std::string str_points = std::to_string(points);
-    pointsSurface = TTF_RenderText_Solid(font, str_points.c_str(), SDL_Color{0,0,0});
     SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
     SDL_BlitSurface(bgImage, NULL, screenSurface, NULL);
     SDL_BlitSurface(Turtle.image, NULL, screenSurface, &Turtle.rect);
@@ -132,7 +133,13 @@ bool bActorsCollide(Actor actorA, Actor actorB)
     return true;
 }
 
-
+void CheckWinCondition()
+{
+    if (points >= 20)
+    {
+        std::cout << "Win\n";
+    }
+}
 
 void UpdateActorPosition(Actor &actor, Vector2 vector)
 {
@@ -177,14 +184,17 @@ void ChangePointLocation()
     float newy = rand() % (SCREEN_HEIGHT - Point.image->h);
     Vector2 v = { newx, newy };
     
-    Point.position = v;
-    Point.rect.x = Point.position.x;
-    Point.rect.y = Point.position.y;
+    Point.position = Vector2{ 0,0 };
+    UpdateActorMovement(Point, v);
 }
 
 void CollectPoint()
 {
     points++;
+    std::string str_points = std::to_string(points);
+    SDL_FreeSurface(pointsSurface);
+    pointsSurface = TTF_RenderText_Solid(font, str_points.c_str(), SDL_Color{ 0,0,0 });
+    CheckWinCondition();
     ChangePointLocation();
 }
 
@@ -238,6 +248,7 @@ int main(int argc, char* args[])
     Mix_FreeChunk(Turtle.walkSound);
     Mix_FreeMusic(bgMusic);
     Mix_Quit();
+    TTF_Quit();
     SDL_Quit();
     return 0;
 }
