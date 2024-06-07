@@ -37,6 +37,15 @@ Vector2 operator*(Vector2 v1, Vector2 v2)
     return Vector2{ v1.x * v2.x, v1.y * v2.y };
 }
 
+struct Overlay
+{
+    SDL_Surface* background;
+    const char* text;
+    SDL_Surface* textSurface;
+};
+
+Overlay EndScreen;
+
 struct Actor
 {
     SDL_Surface* image;
@@ -67,4 +76,9 @@ int points = 0;
 
 TTF_Font* font;
 
+bool bGameLoop = true;
+bool gameEnded = false;
+
 void UpdateActorPosition(Actor& actor, Vector2 vector);
+
+void ActivateOverlay(Overlay overlay);
