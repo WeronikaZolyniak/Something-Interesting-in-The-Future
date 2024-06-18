@@ -207,7 +207,15 @@ void CheckWinCondition()
 
 void UpdateActorPosition(Actor &actor, Vector2 vector)
 {
-    if (actor.position.y + vector.y < 0 || actor.position.y + vector.y + actor.image->h > SCREEN_HEIGHT)
+    Vector2 v = { 0,0 };
+    if (actor.position.y + vector.y > 0 && actor.position.y + vector.y + actor.image->h < SCREEN_HEIGHT) v.y = vector.y;
+    if (actor.position.x + vector.x > 0 && actor.position.x + vector.x + actor.image->w < SCREEN_WIDTH) v.x = vector.x;
+
+    actor.position += v;
+    actor.rect.x = actor.position.x;
+    actor.rect.y = actor.position.y;
+
+    /*if (actor.position.y + vector.y < 0 || actor.position.y + vector.y + actor.image->h > SCREEN_HEIGHT)
     {
          if (vector.x == 0 || actor.position.x + vector.x < 0 || actor.position.x + vector.x + actor.image->w > SCREEN_WIDTH) return;
          else
@@ -232,7 +240,7 @@ void UpdateActorPosition(Actor &actor, Vector2 vector)
 
     actor.position += vector;
     actor.rect.x = actor.position.x;
-    actor.rect.y = actor.position.y;
+    actor.rect.y = actor.position.y;*/
 }
 
 void UpdateActorMovement(Actor& actor, Vector2 vector)
