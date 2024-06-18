@@ -42,6 +42,8 @@ struct Overlay
     SDL_Surface* background;
     const char* text;
     SDL_Surface* textSurface;
+    const char* RestartText = "Press space to play again";
+    SDL_Surface* RestartTextSurface;
 };
 
 Overlay EndScreen;
@@ -82,3 +84,5 @@ bool gameEnded = false;
 void UpdateActorPosition(Actor& actor, Vector2 vector);
 
 void ActivateOverlay(Overlay overlay);
+void RestartGame();
+void ChangePointLocation();

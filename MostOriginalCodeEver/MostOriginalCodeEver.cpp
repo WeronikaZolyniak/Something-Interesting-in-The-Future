@@ -32,6 +32,7 @@ void Init()
 
     Point.image = SDL_LoadBMP("Seashell.bmp");
     SDL_assert(Point.image != nullptr);
+    ChangePointLocation();
 
     bgMusic = Mix_LoadMUS("backgroundMusic.wav");
     SDL_assert(bgMusic != nullptr);
@@ -58,6 +59,10 @@ void InputHandling(SDL_Event &event, bool &bGameLoop)
             {
                 if (Mix_Playing(1) != 0) Mix_HaltChannel(1);
             }
+        }
+        if (event.type == SDL_KEYDOWN)
+        {
+            if (event.key.keysym.sym == SDLK_SPACE && gameEnded) RestartGame();
         }
     }
 
@@ -91,6 +96,33 @@ void UpdateImage()
     SDL_BlitSurface(pointsSurface, NULL, screenSurface, NULL);
     if (gameEnded) ActivateOverlay(EndScreen);
     SDL_UpdateWindowSurface(window);
+}
+
+void RestartGame()
+{
+    gameEnded = false;
+    std::cout << gameEnded << std::endl;
+    SDL_FreeSurface(EndScreen.background);
+    EndScreen.text = "";
+    SDL_FreeSurface(EndScreen.textSurface);
+    SDL_FreeSurface(EndScreen.RestartTextSurface);
+
+    points = 0;
+    std::string str_points = std::to_string(points);
+    SDL_FreeSurface(pointsSurface);
+    pointsSurface = TTF_RenderText_Solid(font, str_points.c_str(), SDL_Color{ 166,126,163 });
+
+    Turtle.rect.x = SCREEN_WIDTH / 2 - (Turtle.image->w / 2);
+    Turtle.position.x = Turtle.rect.x;
+    Turtle.rect.y = SCREEN_HEIGHT / 2 - (Turtle.image->h / 2);
+    Turtle.position.y = Turtle.rect.y;
+    Octopus.rect.x = 0;
+    Octopus.rect.y = 0;
+    Octopus.position.x = Octopus.rect.x;
+    Octopus.position.y = Octopus.rect.y;
+
+    ChangePointLocation();
+    UpdateImage();
 }
 
 bool bActorsCollide(Actor actorA, Actor actorB)
@@ -139,6 +171,7 @@ void CreateWinScreen()
     SDL_assert(EndScreen.background != nullptr);
     EndScreen.text = "Congratulations, you won!";
     EndScreen.textSurface = TTF_RenderText_Solid(font, EndScreen.text, SDL_Color{ 166,126,163 });
+    EndScreen.RestartTextSurface = TTF_RenderText_Solid(font, EndScreen.RestartText, SDL_Color{ 255,255,255 });
 }
 
 void CreateLoseScreen()
@@ -147,6 +180,7 @@ void CreateLoseScreen()
     SDL_assert(EndScreen.background != nullptr);
     EndScreen.text = "You lost";
     EndScreen.textSurface = TTF_RenderText_Solid(font, EndScreen.text, SDL_Color{ 166,126,163 });
+    EndScreen.RestartTextSurface = TTF_RenderText_Solid(font, EndScreen.RestartText, SDL_Color{ 255,255,255 });
 }
 
 void ActivateOverlay(Overlay overlay)
@@ -156,11 +190,15 @@ void ActivateOverlay(Overlay overlay)
     TextRect.y = SCREEN_HEIGHT / 2 - overlay.textSurface->h /2;
     TextRect.x = SCREEN_WIDTH / 2 - overlay.textSurface->w / 2;
     SDL_BlitSurface(overlay.textSurface, NULL, screenSurface, &TextRect);
+    SDL_Rect RestartTextRect;
+    RestartTextRect.y = (4 * SCREEN_HEIGHT) / 5 - overlay.RestartTextSurface->h / 2;
+    RestartTextRect.x = SCREEN_WIDTH / 2 - overlay.RestartTextSurface->w / 2;
+    SDL_BlitSurface(overlay.RestartTextSurface, NULL, screenSurface, &RestartTextRect);
 }
 
 void CheckWinCondition()
 {
-    if (points == 3)
+    if (points == 20)
     {
         CreateWinScreen();
         gameEnded = true;
@@ -262,16 +300,17 @@ int main(int argc, char* args[])
     {
         CalculateDeltaTime();
         InputHandling(event, bGameLoop);
+        if (gameEnded && Mix_Playing(1) != 0) Mix_HaltChannel(1);
         if (!gameEnded)
         {
             UpdateTurtlePosition();
             UpdateOctopusPosition();
+            if (bActorsCollide(Turtle, Point)) CollectPoint();
             if (bActorsCollide(Turtle, Octopus))
             {
                 CreateLoseScreen();
                 gameEnded = true;
             }
-            if (bActorsCollide(Turtle, Point)) CollectPoint();
         }
         
         UpdateImage();
