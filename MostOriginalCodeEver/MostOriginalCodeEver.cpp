@@ -1,4 +1,4 @@
-﻿#include <SDL.h>
+﻿/*#include <SDL.h>
 #include <SDL_mixer.h>
 #include <SDL_ttf.h>
 #include <utility>
@@ -101,7 +101,6 @@ void UpdateImage()
 void RestartGame()
 {
     gameEnded = false;
-    std::cout << gameEnded << std::endl;
     SDL_FreeSurface(EndScreen.background);
     EndScreen.text = "";
     SDL_FreeSurface(EndScreen.textSurface);
@@ -214,33 +213,6 @@ void UpdateActorPosition(Actor &actor, Vector2 vector)
     actor.position += v;
     actor.rect.x = actor.position.x;
     actor.rect.y = actor.position.y;
-
-    /*if (actor.position.y + vector.y < 0 || actor.position.y + vector.y + actor.image->h > SCREEN_HEIGHT)
-    {
-         if (vector.x == 0 || actor.position.x + vector.x < 0 || actor.position.x + vector.x + actor.image->w > SCREEN_WIDTH) return;
-         else
-         {
-             actor.position.x += vector.x;
-             actor.rect.x = actor.position.x;
-             actor.rect.y = actor.position.y;
-             return;
-         }
-    }
-    if (actor.position.x + vector.x < 0 || actor.position.x + vector.x + actor.image->w > SCREEN_WIDTH)
-    {
-        if (vector.y == 0 || actor.position.y + vector.y < 0 || actor.position.y + vector.y + actor.image->h > SCREEN_HEIGHT) return;
-        else
-        {
-            actor.position.y += vector.y;
-            actor.rect.x = actor.position.x;
-            actor.rect.y = actor.position.y;
-            return;
-        }
-    }
-
-    actor.position += vector;
-    actor.rect.x = actor.position.x;
-    actor.rect.y = actor.position.y;*/
 }
 
 void UpdateActorMovement(Actor& actor, Vector2 vector)
@@ -331,5 +303,5 @@ int main(int argc, char* args[])
     TTF_Quit();
     SDL_Quit();
     return 0;
-}
+}*/
 

@@ -141,10 +141,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Actor.cpp" />
+    <ClCompile Include="Audio.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Input.cpp" />
     <ClCompile Include="MostOriginalCodeEver.cpp" />
+    <ClCompile Include="Physics.cpp" />
+    <ClCompile Include="Rendering.cpp" />
+    <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Actor.h" />
+    <ClInclude Include="Audio.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Input.h" />
     <ClInclude Include="MostOriginalHeader.h" />
+    <ClInclude Include="Physics.h" />
+    <ClInclude Include="Rendering.h" />
+    <ClInclude Include="Vector.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
