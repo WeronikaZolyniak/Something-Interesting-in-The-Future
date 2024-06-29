@@ -7,14 +7,14 @@ bool bActorsCollide(Actor actorA, Actor actorB)
     int topA, topB;
     int bottomA, bottomB;
 
-    leftA = actorA.rect.x;
+    leftA = actorA.position.x;
     rightA = leftA + actorA.image->w;
-    topA = actorA.rect.y;
+    topA = actorA.position.y;
     bottomA = topA + actorA.image->h;
 
-    leftB = actorB.rect.x;
+    leftB = actorB.position.x;
     rightB = leftB + actorB.image->w;
-    topB = actorB.rect.y;
+    topB = actorB.position.y;
     bottomB = topB + actorB.image->h;
 
     if (bottomA <= topB)

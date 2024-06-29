@@ -11,6 +11,7 @@ struct Actor
     Vector2 direction = Vector2{ 1,0 };
     SDL_Rect rect;
     Mix_Chunk* walkSound;
+    char tag;
 };
 
 bool bActorsCollide(Actor actorA, Actor actorB);

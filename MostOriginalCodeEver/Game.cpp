@@ -11,17 +11,17 @@ void RestartGame()
     points = 0;
     UpdatePointsText(points, pointsSurface, font);
 
-    Turtle.rect.x = SCREEN_WIDTH / 2 - (Turtle.image->w / 2);
+    Turtle.rect.x = 700 / 2 - (Turtle.image->w / 2);
     Turtle.position.x = Turtle.rect.x;
-    Turtle.rect.y = SCREEN_HEIGHT / 2 - (Turtle.image->h / 2);
+    Turtle.rect.y = 200 / 2 - (Turtle.image->h / 2);
     Turtle.position.y = Turtle.rect.y;
     Octopus.rect.x = 0;
     Octopus.rect.y = 0;
     Octopus.position.x = Octopus.rect.x;
     Octopus.position.y = Octopus.rect.y;
 
-    ChangePointLocation(Point);
-    UpdateImage(gameEnded, Turtle, Octopus, Point, EndScreen, screenSurface, bgImage, pointsSurface, window);
+    ChangePointLocation(Point, Wall);
+    UpdateImage(gameEnded,Wall, Turtle, Octopus, Point, EndScreen, screenSurface, bgImage, pointsSurface, window);
 }
 
 void CheckWinCondition()
@@ -45,7 +45,7 @@ void CollectPoint()
     points++;
     UpdatePointsText(points, pointsSurface, font);
     CheckWinCondition();
-    ChangePointLocation(Point);
+    ChangePointLocation(Point, Wall);
 }
 
 void QuitGame()
@@ -75,9 +75,9 @@ void Init()
     SDL_assert(Turtle.image != nullptr);
     Turtle.walkSound = Mix_LoadWAV("turtleWalkSound.wav");
     SDL_assert(Turtle.walkSound != nullptr);
-    Turtle.rect.x = 640 / 2 - (Turtle.image->w / 2);
+    Turtle.rect.x = 700 / 2 - (Turtle.image->w / 2);
     Turtle.position.x = Turtle.rect.x;
-    Turtle.rect.y = 480 / 2 - (Turtle.image->h / 2);
+    Turtle.rect.y = 200 / 2 - (Turtle.image->h / 2);
     Turtle.position.y = Turtle.rect.y;
 
     Octopus.image = SDL_LoadBMP("octopus.bmp");
@@ -85,13 +85,21 @@ void Init()
 
     Point.image = SDL_LoadBMP("Seashell.bmp");
     SDL_assert(Point.image != nullptr);
-    ChangePointLocation(Point);
+
+    Wall.image = SDL_LoadBMP("testRectangle.bmp");
+    SDL_assert(Wall.image != nullptr);
+    Wall.rect.x = SCREEN_WIDTH / 2 - (Wall.image->w / 2);
+    Wall.rect.y = SCREEN_HEIGHT / 2 - (Wall.image->h / 2);
+    Wall.position.x = Wall.rect.x;
+    Wall.position.y = Wall.rect.y;
+    Wall.tag = 'W';
 
     bgMusic = Mix_LoadMUS("backgroundMusic.wav");
     SDL_assert(bgMusic != nullptr);
 
     Mix_PlayMusic(bgMusic, -1);
     Mix_VolumeMusic(30);
+    ChangePointLocation(Point, Wall);
 }
 
 void ReactToInputEvent()
@@ -135,8 +143,8 @@ int main(int argc, char* args[])
         {
             
             InputVector = GetInputVector();
-            UpdateTurtlePosition(deltaTime, InputVector, Turtle);
-            UpdateOctopusPosition(deltaTime, Octopus, Turtle);
+            UpdateTurtlePosition(deltaTime, InputVector, Turtle, Wall);
+            UpdateOctopusPosition(deltaTime, Octopus, Turtle, Wall);
             if (bActorsCollide(Turtle, Point)) CollectPoint();
            if (bActorsCollide(Turtle, Octopus))
             {
@@ -145,7 +153,7 @@ int main(int argc, char* args[])
             }
         }
 
-        UpdateImage(gameEnded, Turtle, Octopus, Point, EndScreen, screenSurface, bgImage, pointsSurface, window);
+        UpdateImage(gameEnded,Wall, Turtle, Octopus, Point, EndScreen, screenSurface, bgImage, pointsSurface, window);
     }
 
     SDL_DestroyWindow(window);

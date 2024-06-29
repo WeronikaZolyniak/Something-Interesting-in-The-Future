@@ -1,6 +1,6 @@
 #include "Rendering.h"
 
-void UpdateImage(bool gameEnded, Actor Turtle, Actor Octopus, Actor Point, Overlay EndScreen,
+void UpdateImage(bool gameEnded,Actor Wall, Actor Turtle, Actor Octopus, Actor Point, Overlay EndScreen,
     SDL_Surface* screenSurface, SDL_Surface* bgImage, SDL_Surface* pointsSurface, SDL_Window* window)
 {
     screenSurface = SDL_GetWindowSurface(window);
@@ -9,6 +9,7 @@ void UpdateImage(bool gameEnded, Actor Turtle, Actor Octopus, Actor Point, Overl
     SDL_BlitSurface(Turtle.image, NULL, screenSurface, &Turtle.rect);
     SDL_BlitSurface(Octopus.image, NULL, screenSurface, &Octopus.rect);
     SDL_BlitSurface(Point.image, NULL, screenSurface, &Point.rect);
+    SDL_BlitSurface(Wall.image, NULL, screenSurface, &Wall.rect);
     SDL_BlitSurface(pointsSurface, NULL, screenSurface, NULL);
     if (gameEnded) ActivateOverlay(EndScreen, screenSurface);
     SDL_UpdateWindowSurface(window);
@@ -36,8 +37,8 @@ void ActivateOverlay(Overlay overlay, SDL_Surface* &screenSurface)
 {
     SDL_BlitSurface(overlay.background, NULL, screenSurface, NULL);
     SDL_Rect TextRect;
-    TextRect.y = 640 / 2 - overlay.textSurface->h / 2;
-    TextRect.x = 480 / 2 - overlay.textSurface->w / 2;
+    TextRect.y = SCREEN_HEIGHT / 2 - overlay.textSurface->h / 2;
+    TextRect.x = SCREEN_WIDTH / 2 - overlay.textSurface->w / 2;
     SDL_BlitSurface(overlay.textSurface, NULL, screenSurface, &TextRect);
     SDL_Rect RestartTextRect;
     RestartTextRect.y = (4 * SCREEN_HEIGHT) / 5 - overlay.RestartTextSurface->h / 2;

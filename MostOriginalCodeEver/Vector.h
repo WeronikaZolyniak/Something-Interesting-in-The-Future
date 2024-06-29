@@ -21,6 +21,12 @@ struct Vector2
         y += v.y;
     }
 
+    void operator-=(Vector2 v)
+    {
+        x -= v.x;
+        y -= v.y;
+    }
+
     Vector2& operator*(float value)
     {
         x *= value;
