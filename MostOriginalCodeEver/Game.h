@@ -26,7 +26,7 @@ Overlay EndScreen;
 Actor Turtle;
 Actor Octopus;
 Actor Point;
-Actor Wall;
+Actor Walls[21];
 
 SDL_Window* window = NULL;
 SDL_Surface* screenSurface = NULL;

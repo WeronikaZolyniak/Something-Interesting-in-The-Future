@@ -1,15 +1,20 @@
 #include "Rendering.h"
 
-void UpdateImage(bool gameEnded,Actor Wall, Actor Turtle, Actor Octopus, Actor Point, Overlay EndScreen,
+void UpdateImage(bool gameEnded, Actor Walls[21], Actor Turtle, Actor Octopus, Actor Point, Overlay EndScreen,
     SDL_Surface* screenSurface, SDL_Surface* bgImage, SDL_Surface* pointsSurface, SDL_Window* window)
 {
     screenSurface = SDL_GetWindowSurface(window);
     SDL_FillRect(screenSurface, NULL, SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
     SDL_BlitSurface(bgImage, NULL, screenSurface, NULL);
+
+    for (int i = 0; i < 21; i++)
+    {
+        SDL_BlitSurface(Walls[i].image, NULL, screenSurface, &Walls[i].rect);
+    }
+
     SDL_BlitSurface(Turtle.image, NULL, screenSurface, &Turtle.rect);
     SDL_BlitSurface(Octopus.image, NULL, screenSurface, &Octopus.rect);
     SDL_BlitSurface(Point.image, NULL, screenSurface, &Point.rect);
-    SDL_BlitSurface(Wall.image, NULL, screenSurface, &Wall.rect);
     SDL_BlitSurface(pointsSurface, NULL, screenSurface, NULL);
     if (gameEnded) ActivateOverlay(EndScreen, screenSurface);
     SDL_UpdateWindowSurface(window);
