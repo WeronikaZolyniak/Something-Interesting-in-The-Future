@@ -232,7 +232,6 @@ int main(int argc, char* args[])
         ReactToInputEvent();
         if (!gameEnded)
         {
-            
             InputVector = GetInputVector();
             UpdateTurtlePosition(deltaTime, InputVector, Turtle, Walls);
             UpdateOctopusPosition(deltaTime, Octopus, Turtle, Walls);

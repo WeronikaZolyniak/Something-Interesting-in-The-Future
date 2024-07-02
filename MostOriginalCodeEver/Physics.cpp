@@ -37,12 +37,17 @@ bool UpdateActorMovement(Actor& actor, Vector2 vector, Actor Walls[21])
 
 void ChangePointLocation(Actor &Point, Actor Walls[21])
 {
+
     float newx = rand() % (SCREEN_WIDTH - Point.image->w);
     float newy = rand() % (SCREEN_HEIGHT - Point.image->h);
     Vector2 v = { newx, newy };
-
     Point.position = Vector2{ 0,0 };
-    UpdateActorMovement(Point, v, Walls);
+    if (!ActorCanMoveInDirection(v, Point, Walls)) ChangePointLocation(Point, Walls);
+    else
+    {
+        UpdateActorPosition(Point, v, Walls);
+        return;
+    } 
 }
 
 //nie dziala z deltaTime
