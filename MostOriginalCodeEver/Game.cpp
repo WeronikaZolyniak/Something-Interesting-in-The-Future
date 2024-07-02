@@ -15,10 +15,10 @@ void RestartGame()
     Turtle.position.x = Turtle.rect.x;
     Turtle.rect.y = 200 / 2 - (Turtle.image->h / 2);
     Turtle.position.y = Turtle.rect.y;
-    Octopus.rect.x = 0;
-    Octopus.rect.y = 0;
-    Octopus.position.x = Octopus.rect.x;
-    Octopus.position.y = Octopus.rect.y;
+    Octopus.rect.x = 40;
+    Octopus.rect.y = 40;
+    Octopus.position.x = 40;
+    Octopus.position.y = 40;
 
     ChangePointLocation(Point, Walls);
     UpdateImage(gameEnded,Walls, Turtle, Octopus, Point, EndScreen, screenSurface, bgImage, pointsSurface, window);
@@ -177,6 +177,10 @@ void Init()
 
     Octopus.image = SDL_LoadBMP("octopus.bmp");
     SDL_assert(Octopus.image != nullptr);
+    Octopus.rect.x = 40;
+    Octopus.rect.y = 40;
+    Octopus.position.x = 40;
+    Octopus.position.y = 40;
 
     Point.image = SDL_LoadBMP("Seashell.bmp");
     SDL_assert(Point.image != nullptr);

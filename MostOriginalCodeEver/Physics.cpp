@@ -3,7 +3,7 @@
 int SCREEN_WIDTH = 640;
 int SCREEN_HEIGHT = 480;
 
-void UpdateActorPosition(Actor& actor, Vector2 vector, Actor Walls[20])
+bool UpdateActorPosition(Actor& actor, Vector2 vector, Actor Walls[21])
 {
     Vector2 v = { 0,0 };
     if (actor.position.y + vector.y > 0 && actor.position.y + vector.y + actor.image->h < SCREEN_HEIGHT) v.y = vector.y;
@@ -20,22 +20,22 @@ void UpdateActorPosition(Actor& actor, Vector2 vector, Actor Walls[20])
             actor.position -= v;
             actor.rect.x = actor.position.x;
             actor.rect.y = actor.position.y;
-            return;
+            return false;
         }
     }
     
-    
+    return true;
     
 }
 
-void UpdateActorMovement(Actor& actor, Vector2 vector, Actor Walls[20])
+bool UpdateActorMovement(Actor& actor, Vector2 vector, Actor Walls[21])
 {
-    if (vector.x == 0 && vector.y == 0) return;
-    UpdateActorPosition(actor, vector, Walls);
+    if (vector.x == 0 && vector.y == 0) return false;
     PlayActorSound(actor);
+    return UpdateActorPosition(actor, vector, Walls);
 }
 
-void ChangePointLocation(Actor &Point, Actor Walls[20])
+void ChangePointLocation(Actor &Point, Actor Walls[21])
 {
     float newx = rand() % (SCREEN_WIDTH - Point.image->w);
     float newy = rand() % (SCREEN_HEIGHT - Point.image->h);
@@ -45,23 +45,46 @@ void ChangePointLocation(Actor &Point, Actor Walls[20])
     UpdateActorMovement(Point, v, Walls);
 }
 
-void UpdateOctopusPosition(uint32_t deltaTime, Actor &Octopus, Actor &Turtle, Actor Walls[20])
+//nie dziala z deltaTime
+void UpdateOctopusPosition(uint32_t deltaTime, Actor &Octopus, Actor &Turtle, Actor Walls[21])
 {
-    Vector2 v = { 0,0 };
+    std::vector<Vector2> directions;
 
-    if (Octopus.position.x < Turtle.position.x) v += Vector2{ 0.1,0 };
-    else if (Octopus.position.x > Turtle.position.x) v += Vector2{ -0.1,0 };
+    Vector2 m_octopusDirection = { -Octopus.direction.x, -Octopus.direction.y };
 
-    if (Octopus.position.y < Turtle.position.y) v += Vector2{ 0,0.1 };
-    else if (Octopus.position.y > Turtle.position.y) v += Vector2{ 0,-0.1 };
+    if (ActorCanMoveInDirection(Vector2{ 0.1,0 }, Octopus, Walls) && Vector2 { 0.1, 0 } != m_octopusDirection)
+    {
+        directions.push_back(Vector2{ 0.1,0 });
+    }
+    if (ActorCanMoveInDirection(Vector2{ 0,0.1 }, Octopus, Walls) && Vector2 { 0, 0.1 } != m_octopusDirection)
+    {
+        directions.push_back(Vector2{ 0,0.1 });
+    }
+    if (ActorCanMoveInDirection(Vector2{ -0.1,0 }, Octopus, Walls) && Vector2 { -0.1, 0 } != m_octopusDirection)
+    {
+        directions.push_back(Vector2{ -0.1,0 });
+    }
+    if (ActorCanMoveInDirection(Vector2{ 0,-0.1 }, Octopus, Walls) && Vector2 { 0, -0.1 } != m_octopusDirection)
+    {
+        directions.push_back(Vector2{ 0,-0.1 });
+    }
 
-    UpdateActorMovement(Octopus, v * deltaTime, Walls);
+    if(directions.size() == 1 && ActorCanMoveInDirection(Octopus.direction, Octopus, Walls))
+    {
+        UpdateActorPosition(Octopus, Octopus.direction, Walls);
+        return;
+    }
+    else
+    {
+        int NewDirectionIndex = rand() % directions.size();
+        UpdateActorPosition(Octopus, directions[NewDirectionIndex] , Walls);
+        Octopus.direction = directions[NewDirectionIndex];
+    }
 }
 
-void UpdateTurtlePosition(uint32_t deltaTime, Vector2 &InputVector, Actor &Turtle, Actor Walls[20])
+void UpdateTurtlePosition(uint32_t deltaTime, Vector2 &InputVector, Actor &Turtle, Actor Walls[21])
 {
     InputVector.Normalize();
-    UpdateActorMovement(Turtle, InputVector * 0.3 * deltaTime, Walls);
-    //std::cout << "x: " << Turtle.rect.x << "y: " << Turtle.rect.y << std::endl;
+    UpdateActorMovement(Turtle, InputVector * 0.15 * deltaTime, Walls);
     InputVector = Vector2{ 0,0 };
 }

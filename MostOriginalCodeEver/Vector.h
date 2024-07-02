@@ -37,3 +37,5 @@ struct Vector2
 };
 
 Vector2 operator*(Vector2 v1, Vector2 v2);
+
+bool operator!=(Vector2 v1, Vector2 v2);

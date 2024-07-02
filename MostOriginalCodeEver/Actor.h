@@ -8,9 +8,10 @@ struct Actor
 {
     SDL_Surface* image;
     Vector2 position;
-    Vector2 direction = Vector2{ 1,0 };
+    Vector2 direction = Vector2{ 0,0.1 };
     SDL_Rect rect;
     Mix_Chunk* walkSound;
 };
 
 bool bActorsCollide(Actor actorA, Actor actorB);
+bool ActorCanMoveInDirection(Vector2 vector, Actor actor, Actor Walls[21]);
