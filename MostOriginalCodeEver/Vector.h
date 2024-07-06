@@ -27,15 +27,17 @@ struct Vector2
         y -= v.y;
     }
 
-    Vector2& operator*(float value)
+    /*Vector2& operator*(float value)
     {
         x *= value;
         y *= value;
         return *this;
-    }
+    }*/
 
 };
 
 Vector2 operator*(Vector2 v1, Vector2 v2);
+
+Vector2 operator*(Vector2 v1, float value);
 
 bool operator!=(Vector2 v1, Vector2 v2);

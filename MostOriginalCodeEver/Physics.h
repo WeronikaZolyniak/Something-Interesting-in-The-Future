@@ -7,8 +7,8 @@
 #include"Vector.h"
 #include "Audio.h"
 
-bool UpdateActorPosition(Actor &actor, Vector2 vector, Actor Walls[21]);
-bool UpdateActorMovement(Actor &actor, Vector2 vector, Actor Walls[21]);
-void ChangePointLocation(Actor &Point, Actor Walls[21]);
-void UpdateOctopusPosition(uint32_t deltaTime, Actor& Octopus, Actor& Turtle, Actor Walls[21]);
-void UpdateTurtlePosition(uint32_t deltaTime, Vector2 &InputVector, Actor &Turtle, Actor Walls[21]);
+bool UpdateActorPosition(Actor &actor, Vector2 vector, int Walls[12][16]);
+bool UpdateActorMovement(Actor &actor, Vector2 vector, int Walls[12][16]);
+void ChangePointLocation(Actor &Point, int Walls[12][16]);
+void UpdateOctopusPosition(uint32_t deltaTime, Actor& Octopus, int Walls[12][16]);
+void UpdateTurtlePosition(uint32_t deltaTime, Vector2 &InputVector, Actor &Turtle, int Walls[12][16]);

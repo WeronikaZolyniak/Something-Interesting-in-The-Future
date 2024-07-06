@@ -17,7 +17,7 @@ struct Overlay
 };
 
 
-void UpdateImage(bool gameEnded, Actor Walls[21], Actor Turtle, Actor Octopus, Actor Point, Overlay EndScreen,
+void UpdateImage(bool gameEnded, int Walls[12][16], SDL_Surface* WallImage, Actor Turtle, Actor Octopus, Actor Point, Overlay EndScreen,
     SDL_Surface* screenSurface, SDL_Surface* bgImage, SDL_Surface* pointsSurface, SDL_Window* window);
 void CreateWinScreen(Overlay &EndScreen, TTF_Font* font);
 void CreateLoseScreen(Overlay &EndScreen, TTF_Font* font);

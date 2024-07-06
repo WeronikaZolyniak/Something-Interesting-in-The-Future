@@ -14,4 +14,4 @@ struct Actor
 };
 
 bool bActorsCollide(Actor actorA, Actor actorB);
-bool ActorCanMoveInDirection(Vector2 vector, Actor actor, Actor Walls[21]);
+bool ActorCanMoveInDirection(Vector2 vector, Actor actor, int Walls[12][16]);

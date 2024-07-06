@@ -145,7 +145,6 @@
     <ClCompile Include="Audio.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Input.cpp" />
-    <ClCompile Include="MostOriginalCodeEver.cpp" />
     <ClCompile Include="Physics.cpp" />
     <ClCompile Include="Rendering.cpp" />
     <ClCompile Include="Vector.cpp" />
@@ -155,7 +154,6 @@
     <ClInclude Include="Audio.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Input.h" />
-    <ClInclude Include="MostOriginalHeader.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="Rendering.h" />
     <ClInclude Include="Vector.h" />
