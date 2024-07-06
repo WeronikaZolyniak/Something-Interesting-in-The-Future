@@ -27,7 +27,6 @@ Overlay EndScreen;
 Actor Turtle;
 Actor Octopus;
 Actor Point;
-//Actor Walls[21];
 
  int Walls[12][16] = {
     { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
@@ -48,13 +47,13 @@ SDL_Surface* WallImage;
 SDL_Window* window = NULL;
 SDL_Surface* screenSurface = NULL;
 SDL_Surface* bgImage = NULL;
-SDL_Surface* pointsSurface = NULL;
+Text PointsText;
+Text HighScoreText;
 
 TTF_Font* font;
 
 Mix_Music* bgMusic;
 
 void RestartGame();
-void CheckWinCondition();
 void CalculateDeltaTime();
 void QuitGame();

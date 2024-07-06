@@ -65,7 +65,7 @@ void UpdateOctopusPosition(uint32_t deltaTime, Actor &Octopus, int Walls[12][16]
         directions.push_back(Vector2{ 0,-0.1 });
     }
 
-    if (ActorCanMoveInDirection(Octopus.direction, Octopus, Walls))
+    if (ActorCanMoveInDirection(Octopus.direction, Octopus, Walls) || directions.size() == 0)
     {
         Vector2 FinalDirection = Octopus.direction * deltaTime;
 

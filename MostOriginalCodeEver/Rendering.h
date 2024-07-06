@@ -7,19 +7,24 @@
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
+struct Text
+{
+    std::string text;
+    SDL_Surface* Surface;
+    SDL_Rect rect;
+};
+
 struct Overlay
 {
     SDL_Surface* background;
-    const char* text;
-    SDL_Surface* textSurface;
-    const char* RestartText = "Press space to play again";
-    SDL_Surface* RestartTextSurface;
+    Text PointsText;
+    Text HighScoreText;
+    Text GameOverText;
+    Text RestartText;
 };
 
-
 void UpdateImage(bool gameEnded, int Walls[12][16], SDL_Surface* WallImage, Actor Turtle, Actor Octopus, Actor Point, Overlay EndScreen,
-    SDL_Surface* screenSurface, SDL_Surface* bgImage, SDL_Surface* pointsSurface, SDL_Window* window);
-void CreateWinScreen(Overlay &EndScreen, TTF_Font* font);
-void CreateLoseScreen(Overlay &EndScreen, TTF_Font* font);
+    SDL_Surface* screenSurface, SDL_Surface* bgImage, Text PointsText, Text HighScoreText, SDL_Window* window);
+void CreateEndScreen(Overlay &EndScreen, TTF_Font* font, int points, int highScore);
 void ActivateOverlay(Overlay overlay, SDL_Surface* &screenSurface);
-void UpdatePointsText(int points, SDL_Surface*& pointsSurface, TTF_Font* font);
+void UpdateText(Text &text, TTF_Font* font);

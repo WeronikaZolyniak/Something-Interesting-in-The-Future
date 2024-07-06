@@ -4,12 +4,14 @@ void RestartGame()
 {
     gameEnded = false;
     SDL_FreeSurface(EndScreen.background);
-    EndScreen.text = "";
-    SDL_FreeSurface(EndScreen.textSurface);
-    SDL_FreeSurface(EndScreen.RestartTextSurface);
+    SDL_FreeSurface(EndScreen.PointsText.Surface);
+    SDL_FreeSurface(EndScreen.HighScoreText.Surface);
+    SDL_FreeSurface(EndScreen.GameOverText.Surface);
+    SDL_FreeSurface(EndScreen.RestartText.Surface);
 
     points = 0;
-    UpdatePointsText(points, pointsSurface, font);
+    PointsText.text = "points: " + std::to_string(points);
+    UpdateText(PointsText, font);
 
     Turtle.rect.x = 700 / 2 - (Turtle.image->w / 2);
     Turtle.position.x = Turtle.rect.x;
@@ -20,17 +22,8 @@ void RestartGame()
     Octopus.position.x = 40;
     Octopus.position.y = 40;
 
-    //ChangePointLocation(Point, Walls);
-    //UpdateImage(gameEnded,Walls, Turtle, Octopus, Point, EndScreen, screenSurface, bgImage, pointsSurface, window);
-}
-
-void CheckWinCondition()
-{
-    if (points == 2)
-    {
-        CreateWinScreen(EndScreen, font);
-        gameEnded = true;
-    }
+    ChangePointLocation(Point, Walls);
+    UpdateImage(gameEnded,Walls,WallImage, Turtle, Octopus, Point, EndScreen, screenSurface, bgImage, PointsText, HighScoreText, window);
 }
 
 void CalculateDeltaTime()
@@ -43,10 +36,15 @@ void CalculateDeltaTime()
 void CollectPoint()
 {
     points++;
-    UpdatePointsText(points, pointsSurface, font);
-   // if (points > highScore) highScore = points;
-    CheckWinCondition();
-    //ChangePointLocation(Point, Walls);
+    PointsText.text = "points: " + std::to_string(points);
+    UpdateText(PointsText, font);
+    if (points > highScore)
+    {
+        highScore = points;
+        HighScoreText.text = "high score: " + std::to_string(highScore);
+        UpdateText(HighScoreText, font);
+    }
+    ChangePointLocation(Point, Walls);
 }
 
 void QuitGame()
@@ -71,8 +69,12 @@ void Init()
     font = TTF_OpenFont("Font.ttf", 40);
     SDL_assert(font != nullptr);
 
-    std::string str_points = std::to_string(points);
-    pointsSurface = TTF_RenderText_Solid(font, str_points.c_str(), SDL_Color{ 166,126,163 });
+    PointsText.text = "points: " + std::to_string(points);
+    PointsText.Surface = TTF_RenderText_Solid(font, PointsText.text.c_str(), SDL_Color{ 255,255,255 });
+
+    HighScoreText.text = "high score: " + std::to_string(highScore);
+    HighScoreText.Surface = TTF_RenderText_Solid(font, HighScoreText.text.c_str(), SDL_Color{ 255,255,255 });
+    HighScoreText.rect.x = SCREEN_WIDTH - 40 - HighScoreText.Surface->w;
 
     Turtle.image = SDL_LoadBMP("Turtle.bmp");
     SDL_assert(Turtle.image != nullptr);
@@ -146,12 +148,12 @@ int main(int argc, char* args[])
             if (bActorsCollide(Turtle, Point)) CollectPoint();
            if (bActorsCollide(Turtle, Octopus))
             {
-               CreateLoseScreen(EndScreen, font);
+               CreateEndScreen(EndScreen, font, points, highScore);
                gameEnded = true;
             }
         }
 
-        UpdateImage(gameEnded,Walls, WallImage, Turtle, Octopus, Point, EndScreen, screenSurface, bgImage, pointsSurface, window);
+        UpdateImage(gameEnded,Walls, WallImage, Turtle, Octopus, Point, EndScreen, screenSurface, bgImage, PointsText, HighScoreText, window);
     }
 
     SDL_DestroyWindow(window);
