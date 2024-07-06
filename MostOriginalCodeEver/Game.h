@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <iostream>
 #include <string>
+#include <fstream>
 #include "Vector.h"
 #include "Input.h"
 #include "Actor.h"

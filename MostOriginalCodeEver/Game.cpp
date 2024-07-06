@@ -47,6 +47,12 @@ void CollectPoint()
     ChangePointLocation(Point, Walls);
 }
 
+void SaveHighScore()
+{
+    std::ofstream HighScoreFile("hs.txt");
+    HighScoreFile << highScore;
+}
+
 void QuitGame()
 {
     bGameLoop = false;
@@ -72,6 +78,10 @@ void Init()
     PointsText.text = "points: " + std::to_string(points);
     PointsText.Surface = TTF_RenderText_Solid(font, PointsText.text.c_str(), SDL_Color{ 255,255,255 });
 
+    std::ifstream HighScoreFile("hs.txt");
+    HighScoreFile >> highScore;
+    HighScoreFile.close();
+    remove("hs.txt");
     HighScoreText.text = "high score: " + std::to_string(highScore);
     HighScoreText.Surface = TTF_RenderText_Solid(font, HighScoreText.text.c_str(), SDL_Color{ 255,255,255 });
     HighScoreText.rect.x = SCREEN_WIDTH - 40 - HighScoreText.Surface->w;
@@ -110,6 +120,7 @@ void ReactToInputEvent()
     {
         if (event.type == SDL_QUIT)
         {
+            SaveHighScore();
             QuitGame();
         }
         if (event.type == SDL_KEYUP)
