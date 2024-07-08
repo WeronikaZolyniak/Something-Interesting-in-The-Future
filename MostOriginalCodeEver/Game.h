@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <vector>
 #include "Vector.h"
 #include "Input.h"
 #include "Actor.h"
@@ -26,7 +27,8 @@ Vector2 InputVector = { 0,0 };
 Overlay EndScreen;
 
 Actor Turtle;
-Actor Octopus;
+//Actor Octopus;
+std::vector<Actor> Octopuses;
 Actor Point;
 
  int Walls[12][16] = {

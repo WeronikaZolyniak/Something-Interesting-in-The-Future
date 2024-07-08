@@ -1,6 +1,6 @@
 #include "Rendering.h"
 
-void UpdateImage(bool gameEnded, int Walls[12][16], SDL_Surface* WallImage, Actor Turtle, Actor Octopus, Actor Point, Overlay EndScreen,
+void UpdateImage(bool gameEnded, int Walls[12][16], SDL_Surface* WallImage, Actor Turtle, std::vector<Actor> Octopuses, Actor Point, Overlay EndScreen,
     SDL_Surface* screenSurface, SDL_Surface* bgImage, Text PointsText, Text HighScoreText, SDL_Window* window)
 {
     screenSurface = SDL_GetWindowSurface(window);
@@ -22,7 +22,10 @@ void UpdateImage(bool gameEnded, int Walls[12][16], SDL_Surface* WallImage, Acto
     }
 
     SDL_BlitSurface(Turtle.image, NULL, screenSurface, &Turtle.rect);
-    SDL_BlitSurface(Octopus.image, NULL, screenSurface, &Octopus.rect);
+    for (Actor Octopus : Octopuses)
+    {
+        SDL_BlitSurface(Octopus.image, NULL, screenSurface, &Octopus.rect);
+    }
     SDL_BlitSurface(Point.image, NULL, screenSurface, &Point.rect);
     SDL_BlitSurface(PointsText.Surface, NULL, screenSurface, &PointsText.rect);
     SDL_BlitSurface(HighScoreText.Surface, NULL, screenSurface, &HighScoreText.rect);

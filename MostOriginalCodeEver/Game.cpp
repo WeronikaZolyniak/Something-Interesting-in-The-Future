@@ -17,13 +17,15 @@ void RestartGame()
     Turtle.position.x = Turtle.rect.x;
     Turtle.rect.y = 200 / 2 - (Turtle.image->h / 2);
     Turtle.position.y = Turtle.rect.y;
-    Octopus.rect.x = 40;
-    Octopus.rect.y = 40;
-    Octopus.position.x = 40;
-    Octopus.position.y = 40;
+    Octopuses[0].rect.x = 40;
+    Octopuses[0].rect.y = 40;
+    Octopuses[0].position.x = 40;
+    Octopuses[0].position.y = 40;
+
+    Octopuses.erase(Octopuses.begin() + 1, Octopuses.end());
 
     ChangePointLocation(Point, Walls);
-    UpdateImage(gameEnded,Walls,WallImage, Turtle, Octopus, Point, EndScreen, screenSurface, bgImage, PointsText, HighScoreText, window);
+    UpdateImage(gameEnded,Walls,WallImage, Turtle, Octopuses, Point, EndScreen, screenSurface, bgImage, PointsText, HighScoreText, window);
 }
 
 void CalculateDeltaTime()
@@ -31,6 +33,21 @@ void CalculateDeltaTime()
     tickTime = SDL_GetTicks();
     deltaTime = tickTime - lastTickTime;
     lastTickTime = tickTime;
+}
+
+void AddEnemy()
+{
+    if (Octopuses.size() < 12)
+    {
+        Actor Octopus;
+        Octopus.image = SDL_LoadBMP("octopus.bmp");
+        SDL_assert(Octopus.image != nullptr);
+        Octopus.rect.x = 40;
+        Octopus.rect.y = 40;
+        Octopus.position.x = 40;
+        Octopus.position.y = 40;
+        Octopuses.push_back(Octopus);
+    }
 }
 
 void CollectPoint()
@@ -43,6 +60,10 @@ void CollectPoint()
         highScore = points;
         HighScoreText.text = "high score: " + std::to_string(highScore);
         UpdateText(HighScoreText, font);
+    }
+    if (points % 10 == 0)
+    {
+        AddEnemy();
     }
     ChangePointLocation(Point, Walls);
 }
@@ -95,12 +116,14 @@ void Init()
     Turtle.rect.y = 200 / 2 - (Turtle.image->h / 2);
     Turtle.position.y = Turtle.rect.y;
 
+    Actor Octopus;
     Octopus.image = SDL_LoadBMP("octopus.bmp");
     SDL_assert(Octopus.image != nullptr);
     Octopus.rect.x = 40;
     Octopus.rect.y = 40;
     Octopus.position.x = 40;
     Octopus.position.y = 40;
+    Octopuses.push_back(Octopus);
 
     Point.image = SDL_LoadBMP("Seashell.bmp");
     SDL_assert(Point.image != nullptr);
@@ -155,16 +178,19 @@ int main(int argc, char* args[])
         {
             InputVector = GetInputVector();
             UpdateTurtlePosition(deltaTime, InputVector, Turtle, Walls);
-            UpdateOctopusPosition(deltaTime, Octopus, Walls);
-            if (bActorsCollide(Turtle, Point)) CollectPoint();
-           if (bActorsCollide(Turtle, Octopus))
+            for (Actor &Octopus : Octopuses)
             {
-               CreateEndScreen(EndScreen, font, points, highScore);
-               gameEnded = true;
+                UpdateOctopusPosition(deltaTime, Octopus, Walls);
+                if (bActorsCollide(Turtle, Octopus))
+                {
+                    CreateEndScreen(EndScreen, font, points, highScore);
+                    gameEnded = true;
+                }
             }
+            if (bActorsCollide(Turtle, Point)) CollectPoint();
         }
 
-        UpdateImage(gameEnded,Walls, WallImage, Turtle, Octopus, Point, EndScreen, screenSurface, bgImage, PointsText, HighScoreText, window);
+        UpdateImage(gameEnded,Walls, WallImage, Turtle, Octopuses, Point, EndScreen, screenSurface, bgImage, PointsText, HighScoreText, window);
     }
 
     SDL_DestroyWindow(window);
