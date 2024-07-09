@@ -70,8 +70,13 @@ void CollectPoint()
 
 void SaveHighScore()
 {
-    std::ofstream HighScoreFile("hs.txt");
-    HighScoreFile << highScore;
+    std::fstream HighScoreFile("hs.dat", std::ios::out | std::ios::binary);
+
+    if (HighScoreFile)
+    {
+        HighScoreFile.write(reinterpret_cast<char*>(&highScore), 8);
+        HighScoreFile.close();
+    }
 }
 
 void QuitGame()
@@ -99,10 +104,14 @@ void Init()
     PointsText.text = "points: " + std::to_string(points);
     PointsText.Surface = TTF_RenderText_Solid(font, PointsText.text.c_str(), SDL_Color{ 255,255,255 });
 
-    std::ifstream HighScoreFile("hs.txt");
-    HighScoreFile >> highScore;
-    HighScoreFile.close();
-    remove("hs.txt");
+    std::fstream HighScoreFile("hs.dat", std::ios::in | std::ios::binary);
+    if (HighScoreFile)
+    {
+        HighScoreFile.read(reinterpret_cast<char*>(&highScore), 8);
+        std::remove("hs.dat");
+    }
+    else highScore = 0;
+
     HighScoreText.text = "high score: " + std::to_string(highScore);
     HighScoreText.Surface = TTF_RenderText_Solid(font, HighScoreText.text.c_str(), SDL_Color{ 255,255,255 });
     HighScoreText.rect.x = SCREEN_WIDTH - 40 - HighScoreText.Surface->w;
