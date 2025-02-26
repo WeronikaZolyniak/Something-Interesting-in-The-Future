@@ -74,7 +74,7 @@ void SaveHighScore()
 
     if (HighScoreFile)
     {
-        HighScoreFile.write(reinterpret_cast<char*>(&highScore), 8);
+        HighScoreFile.write(reinterpret_cast<char*>(&highScore), 4);
         HighScoreFile.close();
     }
 }
@@ -107,7 +107,7 @@ void Init()
     std::fstream HighScoreFile("hs.dat", std::ios::in | std::ios::binary);
     if (HighScoreFile)
     {
-        HighScoreFile.read(reinterpret_cast<char*>(&highScore), 8);
+        HighScoreFile.read(reinterpret_cast<char*>(&highScore), 4);
         std::remove("hs.dat");
     }
     else highScore = 0;
